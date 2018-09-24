@@ -1,5 +1,12 @@
 # Immigrant Defense Project
 
+## Team
+* Katie Jiang (Project Lead)
+* Siddharth Kumar
+* Stephanie Shi
+* Steven Bursztyn
+* Suzanne Knop
+
 ## Setup
 
 ##### Clone the project
