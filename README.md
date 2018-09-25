@@ -12,8 +12,8 @@
 ##### Clone the project
 
 ```
-$ git clone https://github.com/hack4impact/idp.git
-$ cd idp
+$ git clone https://github.com/hack4impact/immigrant-defense-project.git
+$ cd immigrant-defense-project
 ```
 
 ##### Initialize a virtualenv
