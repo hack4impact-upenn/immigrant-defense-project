@@ -2,6 +2,10 @@
 
 ## Team
 * Katie Jiang (Project Lead)
+* Vaibhaw Ladha
+* Ivan Esmeral
+* Nina Chang
+* Sarah Raines
 * Siddharth Kumar
 * Stephanie Shi
 * Steven Bursztyn
