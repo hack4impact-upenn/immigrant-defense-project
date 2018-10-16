@@ -1,1 +1,1 @@
-from app.checklist.views import checklist # noqa
+from app.checklist.views import checklist  # noqa
