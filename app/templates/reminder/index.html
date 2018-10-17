@@ -2,7 +2,59 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <div class="ui text container">
-        <h1>Reminders</h1>
+<div class="ui stackable grid container">
+    <div class="sixteen wide tablet twelve wide computer centered column">
+        <br />
+        <h2 class="ui header">
+            Manage Reminders
+            <div class="sub header">
+                View and modify text/email reminders.
+            </div>
+        </h2>
+
+        <div class="ui fluid icon input">
+            <input id="search-alerts" type="text" placeholder="Search...">
+            <i class="search icon"></i>
+        </div>
+
+        <table class="ui searchable unstackable selectable celled table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Date/Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in reminders %}
+            <tr>
+                <td>{{ r.title }}</td>
+                <td>{{ r.content }}</td>
+                <td>{{ r.format_date() }} {{ r.format_time() }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('reminder.new_form') }}" class="ui button">Schedule New Reminder</a>
     </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#search-alerts').keyup(function () {
+            var searchText = $(this).val();
+            if (searchText.length > 0) {
+                $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+            } else {
+                $('td.positive').removeClass('positive');
+                $('tr.hidden').removeClass('hidden').show();
+            }
+        });
+    });
+</script>
+
 {% endblock %}

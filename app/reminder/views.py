@@ -21,7 +21,7 @@ reminder = Blueprint('reminder', __name__)
 @reminder.route('/', methods=['GET'])
 def dashboard():
     """Dashboard to view and add text and email reminders."""
-    return render_template('reminder/index.html')
+    return render_template('reminder/index.html', reminders=Reminder.query.all())
 
 
 @reminder.route('/new', methods=['GET', 'POST'])
