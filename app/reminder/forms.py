@@ -16,7 +16,7 @@ class NewReminderForm(Form):
     )
     date = DateField(
         'Date',
-        format='%M/%D/%Y',
+        format='%Y-%m-%d',
         validators=[InputRequired()]
     )
     hours = ['12'] + [str(x) for x in range(1, 12)]
@@ -24,5 +24,6 @@ class NewReminderForm(Form):
         'Time',
         choices=[(f'{h} AM', f'{h} AM') for h in hours] +
                 [(f'{h} PM', f'{h} PM') for h in hours],
+        validators=[InputRequired()]
     )
     submit = SubmitField('Add Reminder')
