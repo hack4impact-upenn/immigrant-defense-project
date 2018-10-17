@@ -1,0 +1,11 @@
+{% import 'macros/page_macros.html' as page %}
+{% import 'macros/form_macros.html' as f %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui text container">
+        <h1>Add New Reminder</h1>
+
+        {{ f.render_form(form) }}
+    </div>
+{% endblock %}
