@@ -72,4 +72,7 @@ def create_app(config_name):
     from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from .checklist import checklist as checklist_blueprint
+    app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
+
     return app
