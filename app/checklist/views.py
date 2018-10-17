@@ -7,6 +7,11 @@ from flask import (
     request,
     url_for,
 )
+from app import db
+from app.checklist.forms import (
+    NewChecklistItemForm,
+)
+from app.models import ChecklistItem
 
 checklist = Blueprint('checklist', __name__)
 
@@ -14,3 +19,18 @@ checklist = Blueprint('checklist', __name__)
 def index():
     """Checklist page."""
     return render_template('checklist/index.html')
+
+
+@checklist.route('/add', methods=['GET', 'POST'])
+def add_checklist_item():
+    """Add a new checklist item."""
+    form = NewChecklistItemForm()
+    if form.validate_on_submit():
+        checklist_item = ChecklistItem(
+            title=form.title.data,
+            description=form.description.data)
+        db.session.add(checklist_item)
+        db.session.commit()
+        flash('Checklist item {} successfully created'.format(checklist_item.title),
+              'form-success')
+    return render_template('checklist/new_checklist_item.html', form=form)
