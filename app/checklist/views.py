@@ -18,7 +18,8 @@ checklist = Blueprint('checklist', __name__)
 @checklist.route('/')
 def index():
     """Checklist page."""
-    return render_template('checklist/index.html')
+    checklist_items = ChecklistItem.query.all()
+    return render_template('checklist/index.html', checklist_items=checklist_items)
 
 
 @checklist.route('/add', methods=['GET', 'POST'])
