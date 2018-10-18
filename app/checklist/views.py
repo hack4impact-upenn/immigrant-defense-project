@@ -35,3 +35,8 @@ def add_checklist_item():
         flash('Checklist item {} successfully created'.format(checklist_item.title),
               'form-success')
     return render_template('checklist/new_checklist_item.html', form=form)
+
+
+# TODO: add route for editing a checklist item
+# /add/<id>
+# reference views.py in admin

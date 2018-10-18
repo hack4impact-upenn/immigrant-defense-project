@@ -1,4 +1,3 @@
-# Add new checklist item form
 from flask_wtf import Form
 from wtforms.fields import (
     StringField,
@@ -24,4 +23,4 @@ class NewChecklistItemForm(Form):
     submit = SubmitField('Add Checklist Item')
 
 
-# Edit checklist item form
+# TODO: Add edit checklist item form
