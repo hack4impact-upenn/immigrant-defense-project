@@ -72,7 +72,7 @@ def setup_prod():
 
 def setup_general():
     """Runs the set-up needed for both local development and production.
-       Also sets up first admin user."""
+       Also sets up first admin, screener, applicant (user) and advisor user."""
     Role.insert_roles()
     admin_query = Role.query.filter_by(name='Administrator')
     if admin_query.first() is not None:
@@ -86,7 +86,42 @@ def setup_general():
             db.session.add(user)
             db.session.commit()
             print('Added administrator {}'.format(user.full_name()))
-
+    screener_query = Role.query.filter_by(name='Screener')
+    if screener_query.first() is not None:
+        if User.query.filter_by(email=Config.SCREENER_EMAIL).first() is None:
+            user = User(
+                first_name='Screener',
+                last_name='Account',
+                password=Config.SCREENER_PASSWORD,
+                confirmed=True,
+                email=Config.SCREENER_EMAIL)
+            db.session.add(user)
+            db.session.commit()
+            print('Added screener {}'.format(user.full_name()))
+    advisor_query = Role.query.filter_by(name='Advisor')
+    if advisor_query.first() is not None:
+        if User.query.filter_by(email=Config.ADVISOR_EMAIL).first() is None:
+            user = User(
+                first_name='Advisor',
+                last_name='Account',
+                password=Config.ADVISOR_PASSWORD,
+                confirmed=True,
+                email=Config.ADVISOR_EMAIL)
+            db.session.add(user)
+            db.session.commit()
+            print('Added screener {}'.format(user.full_name()))
+    user_query = Role.query.filter_by(name='User')
+    if user_query.first() is not None:
+        if User.query.filter_by(email=Config.USER_EMAIL).first() is None:
+            user = User(
+                first_name='Applicant',
+                last_name='Account',
+                password=Config.USER_PASSWORD,
+                confirmed=True,
+                email=Config.USER_EMAIL)
+            db.session.add(user)
+            db.session.commit()
+            print('Added applicant {}'.format(user.full_name()))
 
 @manager.command
 def run_worker():

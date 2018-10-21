@@ -45,6 +45,16 @@ class Config:
     # Admin account
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'password'
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@idp.com'
+
+    USER_PASSWORD = os.environ.get('USER_PASSWORD') or 'password'
+    USER_EMAIL = os.environ.get('USER_EMAIL') or 'user@idp.com'
+
+    ADVISOR_PASSWORD = os.environ.get('ADVISOR_PASSWORD') or 'password'
+    ADVISOR_EMAIL = os.environ.get('ADVISOR_EMAIL') or 'advisor@idp.com'
+
+    SCREENER_PASSWORD = os.environ.get('SCREENER_PASSWORD') or 'password'
+    SCREENER_EMAIL = os.environ.get('SCREENER_EMAIL') or 'screener@idp.com'
+
     EMAIL_SUBJECT_PREFIX = '[{}]'.format(APP_NAME)
     EMAIL_SENDER = '{app_name} Admin <{email}>'.format(
         app_name=APP_NAME, email=MAIL_USERNAME)
