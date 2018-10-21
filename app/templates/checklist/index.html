@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="ui stackable grid container">
+      <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
                 Checklist Items
@@ -32,7 +33,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Description</th>
-                        <th class="two wide" colspan="2"></th>
+                        <th class="one wide"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,8 +41,27 @@
                     <tr>
                         <td>{{ c.title }}</td>
                         <td>{{ c.description }}</td>
-                        <td><i class="edit icon"></i></td>
-                        <td><i class="trash alternate icon"></i></td>
+                        <td>
+                          <div class="ui buttons">
+                            <a href="{{ url_for('checklist.edit_checklist_item', id=c.id) }}" class="ui small compact icon button">
+                              <i class="edit icon"></i>
+                            </a>
+                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                            <button class="ui small compact icon button delete-checklist-item" id="{{ c.id }}">
+                              <i class="trash alternate icon" id="{{ c.id }}"></i>
+                            </button>
+                          </div>
+                        </td>
+                        <!--confirmation modal for deleting a checklist item-->
+                        <div id="modal-{{ c.id }}" class="ui tiny modal delete-checklist-item-modal">
+                           <div class="header">Delete {{ c.title }}</div>
+                           <div class="content">Are you sure you want to delete {{ c.title }}?</div>
+                           <div class="actions">
+                             <div class="ui cancel button">Cancel</div>
+                             <a href="{{ url_for('checklist.delete_checklist_item', id=c.id) }}"
+                               class="negative ui button">Yes, delete this item</a>
+                           </div>
+                        </div>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -51,6 +71,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // searching within the checklist items
             $('#search-checklist-items').keyup(function () {
                 var searchText = $(this).val();
                 if (searchText.length > 0) {
@@ -62,6 +83,12 @@
                     $('td.positive').removeClass('positive');
                     $('tr.hidden').removeClass('hidden').show();
                 }
+            });
+
+            // displaying modal for deleting an item when the delete button is clicked
+            $('.delete-checklist-item').on('click', function(e) {
+                id = e.target.id; // gets the id and shows the appropriate modal
+                $('#modal-' + id).modal('show');
             });
         });
     </script>

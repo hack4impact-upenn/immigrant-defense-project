@@ -2,6 +2,7 @@ from flask_wtf import Form
 from wtforms.fields import (
     StringField,
     SubmitField,
+    TextAreaField
 )
 from wtforms.validators import (
     InputRequired,
@@ -16,11 +17,18 @@ class NewChecklistItemForm(Form):
         'New Checklist Item',
         validators=[InputRequired(),
                     Length(1, 64)])
-    description = StringField(
+    description = TextAreaField(
         'New Checklist Item Description',
-        validators=[InputRequired(),
-                    Length(1, 64)])
+        validators=[InputRequired()])
     submit = SubmitField('Add Checklist Item')
 
 
-# TODO: Add edit checklist item form
+class EditChecklistItemForm(Form):
+    title = StringField(
+        'Edit Checklist item title',
+        validators=[InputRequired(),
+                    Length(1, 64)])
+    description = TextAreaField(
+        'Edit Checklist item description',
+        validators=[InputRequired()])
+    submit = SubmitField('Edit Checklist Item')
