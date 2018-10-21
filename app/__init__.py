@@ -75,4 +75,7 @@ def create_app(config_name):
     from .checklist import checklist as checklist_blueprint
     app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
 
+    from .screening-tool import screening-tool as screening-tool_blueprint
+    app.register_blueprint(screening-tool_blueprint, url_prefix='/screening-tool')
+
     return app
