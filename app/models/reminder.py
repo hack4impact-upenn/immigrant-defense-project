@@ -10,6 +10,7 @@ class Reminder(db.Model):
     content = db.Column(db.String, index=True)
     date = db.Column(db.Date, index=True)
     time = db.Column(db.Time, index=True)
+    sent = db.Column(db.Boolean, index=True, default=False)
 
     def format_date(self):
         return self.date.strftime('%M/%D/%Y')

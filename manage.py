@@ -6,9 +6,12 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 from redis import Redis
 from rq import Connection, Queue, Worker
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime
 
 from app import create_app, db
 from app.models import Reminder, Role, User
+from app.sms import check_reminders
 from config import Config
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -98,6 +101,12 @@ def run_worker():
         port=app.config['RQ_DEFAULT_PORT'],
         db=0,
         password=app.config['RQ_DEFAULT_PASSWORD'])
+
+    # Initialize background scheduler for SMS reminders
+    scheduler = BackgroundScheduler()
+    # TODO change start_date once SMS reminders properly tested
+    # scheduler.add_job(check_reminders, 'interval', start_date=datetime.now(), minutes=1)
+    # scheduler.start()
 
     with Connection(conn):
         worker = Worker(map(Queue, listen))
