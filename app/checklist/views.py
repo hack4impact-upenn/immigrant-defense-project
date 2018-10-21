@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from app import db
 from app.checklist.forms import (
     EditChecklistItemForm,
-    NewChecklistItemForm,
+    # NewChecklistItemForm,
 )
 from app.models import ChecklistItem
 
@@ -28,7 +28,8 @@ def index():
 @checklist.route('/add', methods=['GET', 'POST'])
 def add_checklist_item():
     """Add a new checklist item."""
-    form = NewChecklistItemForm()
+    form = EditChecklistItemForm()
+    type = "Add New"
     if form.validate_on_submit():
         checklist_item = ChecklistItem(
             title=form.title.data,
@@ -37,7 +38,8 @@ def add_checklist_item():
         db.session.commit()
         flash('Checklist item {} successfully created'.format(checklist_item.title),
               'form-success')
-    return render_template('checklist/new_checklist_item.html', form=form)
+        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>', methods=['GET', 'POST'])
@@ -48,6 +50,7 @@ def edit_checklist_item(id):
         abort(404)
     old_title = checklist_item.title
     form = EditChecklistItemForm()
+    type = "Edit"
     if form.validate_on_submit():
         checklist_item.title = form.title.data
         checklist_item.description = form.description.data
@@ -58,10 +61,10 @@ def edit_checklist_item(id):
         except IntegrityError:
             db.session.rollback()
             flash('Error Occurred. Please try again.', 'form-error')
-        return render_template('checklist/edit_checklist_item.html', form=form)
+        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
     form.title.data = checklist_item.title
     form.description.data = checklist_item.description
-    return render_template('checklist/edit_checklist_item.html', form=form)
+    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>/delete')
