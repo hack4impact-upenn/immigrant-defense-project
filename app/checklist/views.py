@@ -11,8 +11,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.checklist.forms import (
-    EditChecklistItemForm,
-    # NewChecklistItemForm,
+    ChecklistItemForm,
 )
 from app.models import ChecklistItem
 
@@ -28,7 +27,7 @@ def index():
 @checklist.route('/add', methods=['GET', 'POST'])
 def add_checklist_item():
     """Add a new checklist item."""
-    form = EditChecklistItemForm()
+    form = ChecklistItemForm()
     type = "Add New"
     if form.validate_on_submit():
         checklist_item = ChecklistItem(
@@ -49,7 +48,7 @@ def edit_checklist_item(id):
     if checklist_item is None:
         abort(404)
     old_title = checklist_item.title
-    form = EditChecklistItemForm()
+    form = ChecklistItemForm()
     type = "Edit"
     if form.validate_on_submit():
         checklist_item.title = form.title.data

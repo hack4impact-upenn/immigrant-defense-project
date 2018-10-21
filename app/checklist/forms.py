@@ -12,7 +12,7 @@ from app import db
 from app.models import ChecklistItem
 
 
-class EditChecklistItemForm(Form):
+class ChecklistItemForm(Form):
     title = StringField(
         validators=[InputRequired(),
                     Length(1, 64)])
