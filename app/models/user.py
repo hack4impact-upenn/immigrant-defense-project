@@ -5,11 +5,14 @@ from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
+from . import applicant_profile
 
 
 class Permission:
-    GENERAL = 0x01
-    ADMINISTER = 0xff
+    GENERAL = 0x01 #Applicants
+    SCREENER = 0x02
+    ADVISOR = 0x03
+    ADMINISTER = 0x04 #04 was ff before
 
 
 class Role(db.Model):
@@ -24,11 +27,21 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.GENERAL, 'main', True),
+            'User': (Permission.GENERAL, 'main', True), #Applicants
             'Administrator': (
                 Permission.ADMINISTER,
                 'admin',
-                False  # grants all permissions
+                True  # grants all permissions
+            ),
+            'Screener': (
+                Permission.SCREENER,
+                'screener',
+                False
+            ),
+            'Advisor': (
+                Permission.ADVISOR,
+                'advisor',
+                False
             )
         }
         for r in roles:
@@ -55,12 +68,21 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
+    applicant_profile_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
+    applicant_profile = db.relationship("ApplicantProfile", uselist = False, back_populates="user")
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['ADMIN_EMAIL']:
                 self.role = Role.query.filter_by(
                     permissions=Permission.ADMINISTER).first()
+            if self.email == current_app.config['SCREENER_EMAIL']:
+                self.role = Role.query.filter_by(
+                    permissions=Permission.ADVISOR).first()
+            if self.email == current_app.config['ADVISOR_EMAIL']:
+                self.role = Role.query.filter_by(
+                    permissions=Permission.ADVISOR).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
@@ -72,7 +94,16 @@ class User(UserMixin, db.Model):
             (self.role.permissions & permissions) == permissions
 
     def is_admin(self):
-        return self.can(Permission.ADMINISTER)
+        return self.role_id == 4
+
+    def is_applicant(self):
+        return self.role_id == 1
+
+    def is_advisor(self):
+        return self.role_id == 3
+
+    def is_screener(self):
+        return self.role_id == 2
 
     @property
     def password(self):
@@ -162,14 +193,17 @@ class User(UserMixin, db.Model):
 
         seed()
         for i in range(count):
+            role = choice(roles)
             u = User(
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=fake.email(),
                 password='password',
                 confirmed=True,
-                role=choice(roles),
+                role=role,
                 **kwargs)
+            if role.name == 'User':
+                u.applicant_profile = ApplicantProfile.generate_fake()
             db.session.add(u)
             try:
                 db.session.commit()
