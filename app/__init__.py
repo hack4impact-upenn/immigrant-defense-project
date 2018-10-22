@@ -75,6 +75,9 @@ def create_app(config_name):
     from .checklist import checklist as checklist_blueprint
     app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
 
+    from .screening import screening as screening_blueprint
+    app.register_blueprint(screening_blueprint, url_prefix='/screening')
+    
     from .reminder import reminder as reminder_blueprint
     app.register_blueprint(reminder_blueprint, url_prefix='/reminder')
 
