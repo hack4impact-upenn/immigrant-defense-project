@@ -1,17 +1,93 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <div class="ui text container">
-      <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
+    <div class="ui stackable grid container">
+      <div class="ui hidden divider"></div>
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Screening Questions
+                <div class="sub header">
+                    View and manage screening questions.
+                </div>
+            </h2>
 
-        <p>This is <a href="http://hack4impact.org">Hack4Impact</a>'s web application template. We'll use this as a
-        foundation for each of our <a href="http://flask.pocoo.org">Flask</a> projects. The goal is to reduce the work
-        necessary to get a new project off the ground, by providing boilerplate code (such as account management
-        facilities), as well as uncontroversial and extensible defaults. We have integrated an
-        <a href="http://sass-lang.com">SCSS</a>-based asset pipeline based around a (fantastic!) framework
-        called <a href="http://semantic-ui.com">Semantic UI</a>. Much of this code is appropriated from the examples
-        in Miguel Grinberg's book, <a href="http://flaskbook.com"><em>Flask Web Development</em></a>.</p>
+            <div class="ui middle aligned divided list">
+                <div class="item">
+                    <div class="right floated content">
+                        <a href="{{ url_for('screening.add_screening_question') }}" class="ui button">
+                            <i class="plus icon"></i>
+                            New Screening Question
+                        </a>
+                    </div>
+                    <div class="content">
+                        <div class="ui left icon fluid input">
+                            <i class="search icon"></i>
+                            <input id="search-screening-questions" type="text" placeholder="Search screening question by name">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <p>{{ lipsum(6) }}</p>
+            <table class="ui searchable sortable unstackable selectable celled table" style="overflow-x: scroll;">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th class="one wide"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for c in screening_questions %}
+                    <tr>
+                        <td>{{ c.question }}</td>
+                        <td>
+                          <div class="ui buttons">
+                            <a href="{{ url_for('screening.edit_screening_question', id=c.id) }}" class="ui small compact icon button">
+                              <i class="edit icon"></i>
+                            </a>
+                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                            <button class="ui small compact icon button delete-screening-question" id="{{ c.id }}">
+                              <i class="trash alternate icon" id="{{ c.id }}"></i>
+                            </button>
+                          </div>
+                        </td>
+                        <!--confirmation modal for deleting a screening question-->
+                        <div id="modal-{{ c.id }}" class="ui tiny modal delete-screening-question-modal">
+                           <div class="header">Delete this question</div>
+                           <div class="content">Are you sure you want to delete the following question?<br><br>{{ c.question }}</div>
+                           <div class="actions">
+                             <div class="ui cancel button">Cancel</div>
+                             <a href="{{ url_for('screening.delete_screening_question', id=c.id) }}"
+                               class="negative ui button">Yes, delete this question</a>
+                           </div>
+                        </div>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // searching within the screening questions
+            $('#search-screening-questions').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+            // displaying modal for deleting an item when the delete button is clicked
+            $('.delete-screening-question').on('click', function(e) {
+                id = e.target.id; // gets the id and shows the appropriate modal
+                $('#modal-' + id).modal('show');
+            });
+        });
+    </script>
 {% endblock %}

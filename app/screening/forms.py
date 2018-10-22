@@ -12,6 +12,5 @@ from app.models import ScreeningQuestion
 
 class ScreeningQuestionForm(Form):
     question = StringField(
-        'hello',
         validators = [InputRequired(), Length(1, 256)])
     submit = SubmitField()
