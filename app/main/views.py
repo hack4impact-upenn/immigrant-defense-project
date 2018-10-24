@@ -1,3 +1,8 @@
+import os
+import boto3
+import json
+import time
+
 from flask import Blueprint, render_template
 
 from app.models import EditableHTML
@@ -31,7 +36,7 @@ def sign_s3():
     file_type = request.args.get('file-type')
 
     # Initialise the S3 client
-    s3 = boto3.client('s3', 'us-west-2')
+    s3 = boto3.client('s3', 'us-east-2')
 
     # Generate and return the presigned URL
     presigned_post = s3.generate_presigned_post(
@@ -47,3 +52,14 @@ def sign_s3():
             "Content-Type": file_type
         }],
         ExpiresIn=60000)
+
+    # Return the data to the client
+    return json.dumps({
+        'data':
+        presigned_post,
+        'url_upload':
+        'https://%s.%s.amazonaws.com' % (S3_BUCKET, S3_REGION),
+        'url':
+        'https://%s.amazonaws.com/%s/json/%s' % (S3_REGION, S3_BUCKET,
+                                                 file_name)
+    })
