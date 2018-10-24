@@ -11,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.checklist.forms import (
-    ChecklistItemForm,
+    ChecklistItemForm, UploadDocumentForm
 )
 from app.models import ChecklistItem
 
@@ -22,6 +22,12 @@ def index():
     """Checklist page."""
     checklist_items = ChecklistItem.query.all()
     return render_template('checklist/index.html', checklist_items=checklist_items)
+
+@checklist.route('/upload', methods=["GET", "POST"])
+def upload():
+    """Upload a pdf."""
+    form = UploadDocumentForm()
+    return render_template('checklist/upload_document.html', form=form)
 
 
 @checklist.route('/add', methods=['GET', 'POST'])

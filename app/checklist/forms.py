@@ -19,3 +19,11 @@ class ChecklistItemForm(Form):
     description = TextAreaField(
         validators=[InputRequired()])
     submit = SubmitField()
+
+class MultipleFileUploadField(StringField):
+    pass
+
+class UploadDocumentForm(Form):
+    picture_urls = MultipleFileUploadField(
+            'Upload File')
+    submit = SubmitField('Create')

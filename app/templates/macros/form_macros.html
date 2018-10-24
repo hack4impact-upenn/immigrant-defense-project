@@ -133,6 +133,12 @@
                 {{ item.label }}
             </div>
         {% endfor %}
+    {% elif field.type == 'MultipleFileUploadField' %}
+        <label for="file" class="ui button">
+          Add Document
+        </label>
+        <input type="file" id="file" style="display:none"><br>
+        <div style="display:none">{{ field }}</div>    
     {% elif field.type == 'SubmitField' %}
         {{ field(class='ui button') }}
     {% elif field.type == 'FormField' %}
