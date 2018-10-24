@@ -9,10 +9,10 @@ from wtforms.validators import (
     Length,
 )
 from app import db
-from app.models import ChecklistItem
+from app.models import DefaultChecklistItem
 
 
-class ChecklistItemForm(Form):
+class DefaultChecklistItemForm(Form):
     title = StringField(
         validators=[InputRequired(),
                     Length(1, 64)])
