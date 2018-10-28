@@ -189,6 +189,7 @@ class User(UserMixin, db.Model):
         from faker import Faker
 
         fake = Faker()
+        Role.insert_roles()
         roles = Role.query.all()
 
         seed()
