@@ -1,7 +1,7 @@
 from .. import db
 
 
-class Documents(db.Model):
-    __tablename__ = 'documents'
+class Document(db.Model):
+    __tablename__ = 'document'
     user_id = db.Column(db.Integer, primary_key=True)
     document_urls = db.Column(db.Text)
