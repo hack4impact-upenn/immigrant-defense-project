@@ -40,6 +40,9 @@ def upload():
         doc.document_urls = form.file_urls.data
         db.session.add(doc)
         db.session.commit()
+        return redirect(url_for('checklist.index'))
+
+    form.file_urls.data = doc.document_urls
 
     return render_template('checklist/upload_document.html', form=form)
 
