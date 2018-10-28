@@ -12,3 +12,7 @@ class UserChecklistItem(db.Model):
     title = db.Column(db.String(64))
     description = db.Column(db.Text)
     completed = db.Column(db.Boolean, index=True, default=False)
+    document = db.Column(db.ForeignKey('document.user_id'))
+
+    def __repr__(self):
+        return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(self.title, self.description, self.completed, self.document)
