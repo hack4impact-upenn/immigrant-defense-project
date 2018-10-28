@@ -17,12 +17,4 @@
         </div>
     </div>
     {{ upload.file_upload('document_urls') }}
-    <script>
-    $(document).ready(function() {
-      $('select[name^="tag_"]').each(function() {
-        console.log('hi')
-        $(this).multiselect();
-      })
-    });
-  </script>
 {% endblock %}

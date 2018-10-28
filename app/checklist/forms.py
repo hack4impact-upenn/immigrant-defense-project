@@ -25,5 +25,5 @@ class MultipleFileUploadField(StringField):
 
 class UploadDocumentForm(Form):
     picture_urls = MultipleFileUploadField(
-            'Upload File')
-    submit = SubmitField('Create')
+            'Select & Upload File')
+    submit = SubmitField('Upload Document')
