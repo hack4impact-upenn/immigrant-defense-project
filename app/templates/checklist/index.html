@@ -5,18 +5,18 @@
       <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
-                Checklist Items
+                Default Checklist Items
                 <div class="sub header">
-                    View and manage checklist items.
+                    View and manage default checklist items.
                 </div>
             </h2>
 
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="right floated content">
-                        <a href="{{ url_for('checklist.add_checklist_item') }}" class="ui button">
+                        <a href="{{ url_for('checklist.add_default_checklist_item') }}" class="ui button">
                             <i class="plus icon"></i>
-                            New Checklist Item
+                            New default checklist item
                         </a>
                     </div>
                     <div class="content">
@@ -37,13 +37,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for c in checklist_items %}
+                {% for c in default_checklist_items %}
                     <tr>
                         <td>{{ c.title }}</td>
                         <td>{{ c.description }}</td>
                         <td>
                           <div class="ui buttons">
-                            <a href="{{ url_for('checklist.edit_checklist_item', id=c.id) }}" class="ui small compact icon button">
+                            <a href="{{ url_for('checklist.edit_default_checklist_item', id=c.id) }}" class="ui small compact icon button">
                               <i class="edit icon"></i>
                             </a>
                             <!--we give the button and icon the same id to avoid weird things with hitboxes-->
@@ -58,7 +58,7 @@
                            <div class="content">Are you sure you want to delete {{ c.title }}?</div>
                            <div class="actions">
                              <div class="ui cancel button">Cancel</div>
-                             <a href="{{ url_for('checklist.delete_checklist_item', id=c.id) }}"
+                             <a href="{{ url_for('checklist.delete_default_checklist_item', id=c.id) }}"
                                class="negative ui button">Yes, delete this item</a>
                            </div>
                         </div>
