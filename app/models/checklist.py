@@ -15,7 +15,7 @@ class UserChecklistItem(db.Model):
     description = db.Column(db.Text)
     completed = db.Column(db.Boolean, index=True, default=False)
     applicant_profile_id = db.Column(db.ForeignKey('applicant_profile.id'))
-    document = db.Column(db.ForeignKey('document.user_id'))
+    documents = db.relationship('Document', backref='UserChecklistItem', lazy=True)
 
     def __repr__(self):
         return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(self.title, self.description, self.completed, self.document)
