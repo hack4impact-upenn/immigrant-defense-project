@@ -10,7 +10,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 
 from app import create_app, db
-from app.models import Reminder, Role, User
+from app.models import DefaultChecklistItem, Reminder, Role, User, UserChecklistItem
 from app.sms import check_reminders
 from config import Config
 
@@ -60,6 +60,8 @@ def add_fake_data(number_users):
     """
     User.generate_fake(count=number_users)
     Reminder.generate_fake()
+    DefaultChecklistItem.generate_fake()
+    UserChecklistItem.generate_fake()
 
 
 @manager.command
