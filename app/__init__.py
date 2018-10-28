@@ -72,12 +72,18 @@ def create_app(config_name):
     from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from .advisor import advisor as advisor_blueprint
+    app.register_blueprint(advisor_blueprint, url_prefix='/advisor')
+
     from .checklist import checklist as checklist_blueprint
     app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
 
+    from .screener import screener as screener_blueprint
+    app.register_blueprint(screener_blueprint, url_prefix='/screener')
+
     from .screening import screening as screening_blueprint
     app.register_blueprint(screening_blueprint, url_prefix='/screening')
-    
+
     from .reminder import reminder as reminder_blueprint
     app.register_blueprint(reminder_blueprint, url_prefix='/reminder')
 
