@@ -79,7 +79,7 @@ class User(UserMixin, db.Model):
                     permissions=Permission.ADMINISTER).first()
             if self.email == current_app.config['SCREENER_EMAIL']:
                 self.role = Role.query.filter_by(
-                    permissions=Permission.ADVISOR).first()
+                    permissions=Permission.SCREENER).first()
             if self.email == current_app.config['ADVISOR_EMAIL']:
                 self.role = Role.query.filter_by(
                     permissions=Permission.ADVISOR).first()
