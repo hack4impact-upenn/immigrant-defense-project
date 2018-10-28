@@ -8,4 +8,4 @@ from .document import *
 from .miscellaneous import *  # noqa
 from .reminder import *  # noqa
 from .user import *  # noqa
-from .screening import *
+from .screening import * # noqa
