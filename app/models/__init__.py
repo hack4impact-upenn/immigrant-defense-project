@@ -4,7 +4,7 @@ module (as opposed to just their python files)
 """
 from .applicant_profile import *
 from .checklist import * # noqa
-from .document import *
+from .document import * # noqa
 from .miscellaneous import *  # noqa
 from .reminder import *  # noqa
 from .screening import *

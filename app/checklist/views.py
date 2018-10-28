@@ -7,13 +7,15 @@ from flask import (
     request,
     url_for,
 )
+from flask_login import (login_required, current_user)
+
 from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.checklist.forms import (
-    ChecklistItemForm, UploadDocumentForm
+    DefaultChecklistItemForm, UploadDocumentForm
 )
-from app.models import DefaultChecklistItem
+from app.models import DefaultChecklistItem, Document, User
 
 checklist = Blueprint('checklist', __name__)
 
@@ -27,6 +29,18 @@ def index():
 def upload():
     """Upload a pdf."""
     form = UploadDocumentForm()
+
+    doc = Document.query.get(current_user.id)
+
+    if form.validate_on_submit():
+        if doc is None:
+            doc = Document()
+            doc.user_id = current_user.id
+        
+        doc.document_urls = form.file_urls.data
+        db.session.add(doc)
+        db.session.commit()
+
     return render_template('checklist/upload_document.html', form=form)
 
 

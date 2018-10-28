@@ -56,7 +56,7 @@ function handleFunc(url, file) {
   var curr = $("#{{ fieldname }}").val()
   $("div > input#{{ fieldname }}").val(curr + ( curr ? ',': '' ) + url);
   $("#{{ fieldname }}_list").append(
-    '<div class="badge badge-light"><i class="file icon"></i><a href="' + url + '">' + url + '</a><span class="delete badge badge-danger" data-url="' + url + '">Delete Image</span></span>')
+    '<div class="badge badge-light"><i class="file icon"></i><a href="' + url + '">' + url + '</a><span class="delete badge badge-danger" data-url="' + url + '">Delete Document</span></span>')
 };
 $('body').on('click', '.delete', function() {
   var url = $(this).data('url');

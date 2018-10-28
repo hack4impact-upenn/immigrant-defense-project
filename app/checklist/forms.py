@@ -9,7 +9,7 @@ from wtforms.validators import (
     Length,
 )
 from app import db
-from app.models import DefaultChecklistItem
+from app.models import DefaultChecklistItem, Document
 
 
 class DefaultChecklistItemForm(Form):
@@ -24,6 +24,6 @@ class MultipleFileUploadField(StringField):
     pass
 
 class UploadDocumentForm(Form):
-    picture_urls = MultipleFileUploadField(
+    file_urls = MultipleFileUploadField(
             'Select & Upload File')
     submit = SubmitField('Upload Document')
