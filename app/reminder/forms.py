@@ -6,7 +6,19 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import InputRequired, Length
 
 
-class NewReminderForm(Form):
+class SendNewReminderForm(Form):
+    title = StringField(
+        'Reminder title',
+        validators=[InputRequired(), Length(1, 64)]
+    )
+    content = TextAreaField(
+        'Content',
+        validators=[InputRequired()]
+    )
+    submit = SubmitField('Send Now')
+
+
+class ScheduleNewReminderForm(Form):
     title = StringField(
         'Reminder title',
         validators=[InputRequired(), Length(1, 64)]
@@ -27,4 +39,4 @@ class NewReminderForm(Form):
                 [(f'{h} PM', f'{h} PM') for h in hours],
         validators=[InputRequired()]
     )
-    submit = SubmitField('Add Reminder')
+    submit = SubmitField('Schedule Reminder')
