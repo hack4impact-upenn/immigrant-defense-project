@@ -10,7 +10,7 @@ class DefaultChecklistItem(db.Model):
     @staticmethod
     def generate_fake(count=10):
         from sqlalchemy.exc import IntegrityError
-        from random import seed, choice
+        from random import seed
         from faker import Faker
 
         fake = Faker()
@@ -41,7 +41,7 @@ class UserChecklistItem(db.Model):
     @staticmethod
     def generate_fake(count=5):
         from sqlalchemy.exc import IntegrityError
-        from random import seed, choice
+        from random import seed
         from faker import Faker
 
         fake = Faker()
