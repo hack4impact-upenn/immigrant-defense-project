@@ -11,4 +11,3 @@ class ApplicantProfile(db.Model):
     legal_advisor = db.Column(db.ForeignKey('applicant_profile.id'))
     applicant = db.Column(db.ForeignKey('applicant_profile.id'))
     user_checklist_items = db.relationship('UserChecklistItem', backref='applicant_profile', lazy=True)
-
