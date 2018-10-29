@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+      <div class="ui hidden divider"></div>
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Applications
+                <div class="sub header">
+                    View and manage applications.
+                </div>
+            </h2>
+
+            <div class="ui middle aligned divided list">
+                <div class="item">
+                    <div class="content">
+                        <div class="ui left icon fluid input">
+                            <i class="search icon"></i>
+                            <input id="search-applications" type="text" placeholder="Search applications...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="ui searchable sortable unstackable selectable celled table" style="overflow-x: scroll;">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th class="one wide"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for a in applications %}
+                    <tr>
+                        <td>{{ a.phone_number }}</td>
+                        <td>{{ a.id }}</td>
+                        <td>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // searching within the checklist items
+            $('#search-applications').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+        });
+    </script>
+{% endblock %}
