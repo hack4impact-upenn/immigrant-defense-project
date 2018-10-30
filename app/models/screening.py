@@ -9,6 +9,6 @@ class ScreeningQuestion(db.Model):
 class ScreeningAnswer(db.Model):
     __tablename__ = 'screening_answer'
     id = db.Column(db.Integer, primary_key=True)
-    applicant = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
-    question = db.Column(db.Integer, db.ForeignKey('screening_question.id'))
+    applicant_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('screening_question.id'))
     answer = db.Column(db.Text)
