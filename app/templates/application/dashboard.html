@@ -31,11 +31,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for a in applications %}
+                {% for a in applicants %}
                     <tr>
-                        <td>{{ a.user.first_name }}</td>
-                        <td>{{ a.user.last_name }}</td>
-                        <td>{{ a.phone_number }}</td>
+                        <td>{{ a.first_name }}</td>
+                        <td>{{ a.last_name }}</td>
+                        <td>{{ a.application.phone_number }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

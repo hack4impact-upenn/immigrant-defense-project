@@ -1,5 +1,3 @@
-import random
-from faker import Faker
 from .. import db
 from sqlalchemy.orm import validates
 
@@ -13,5 +11,7 @@ class Application(db.Model):
     legal_advisor = db.relationship('User')
     user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
 
+    @staticmethod
     def generate_fake():
-        return Application(phone_number='+12345678900')
+        from faker import Faker
+        return Application(phone_number=Faker().phone_number())

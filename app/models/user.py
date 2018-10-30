@@ -204,7 +204,7 @@ class User(UserMixin, db.Model):
                 confirmed=True,
                 role=role,
                 **kwargs)
-            if u.is_applicant():
+            if u.role.id == 1:
                 u.application = Application.generate_fake()
             db.session.add(u)
             try:
