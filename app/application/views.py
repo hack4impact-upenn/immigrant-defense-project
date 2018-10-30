@@ -11,7 +11,7 @@ from flask_login import current_user, login_required
 from flask_rq import get_queue
 
 from app import db
-from app.models import ApplicantProfile
+from app.models import Application
 
 application = Blueprint('application', __name__)
 
@@ -24,9 +24,9 @@ def index():
     elif current_user.is_screener():
         return redirect(404)
     elif current_user.is_admin():
-        applications = ApplicantProfile.query.all()
+        applications = Application.query.all()
     elif current_user.is_advisor():
-        applications = ApplicantProfile.query.filter_by(legal_advisor=current_user.id).all()
+        applications = Application.query.filter_by(legal_advisor=current_user.id).all()
     return render_template('application/dashboard.html', applications=applications)
 
 
@@ -35,7 +35,7 @@ def index():
 def view(user_id):
     if current_user.is_applicant() and current_user.id != user_id:
         return redirect(404)
-    application = ApplicantProfile.query.filter_by(applicant=current_user.id)
+    application = Application.query.filter_by(applicant=current_user.id)
     if not application:
         return redirect(404)
     return render_template('application/profile.html', application=application)
