@@ -192,7 +192,7 @@ class User(UserMixin, db.Model):
         fake = Faker()
         Role.insert_roles()
         roles = Role.query.all()
-
+        
         seed()
         for i in range(count):
             role = choice(roles)
@@ -204,7 +204,7 @@ class User(UserMixin, db.Model):
                 confirmed=True,
                 role=role,
                 **kwargs)
-            if u.role.id == 1:
+            if u.role.permissions == Permission.GENERAL:
                 u.application = Application.generate_fake()
             db.session.add(u)
             try:
