@@ -18,7 +18,6 @@ application = Blueprint('application', __name__)
 @login_required
 @application.route('/')
 def index():
-    print(current_user.role_id)
     if current_user.is_applicant():
         return redirect(url_for('application.view'), current_user.id)
     elif current_user.is_screener():
