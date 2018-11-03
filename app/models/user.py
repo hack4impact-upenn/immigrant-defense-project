@@ -5,7 +5,7 @@ from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from . import applicant_profile
+from .application import Application
 
 
 class Permission:
@@ -72,8 +72,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    applicant_profile_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
-    applicant_profile = db.relationship("ApplicantProfile", uselist = False, back_populates="user")
+    application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
+    application = db.relationship("Application", uselist = False, back_populates="user")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -204,8 +204,8 @@ class User(UserMixin, db.Model):
                 confirmed=True,
                 role=role,
                 **kwargs)
-            if u.is_applicant():
-                u.applicant_profile = ApplicantProfile.generate_fake()
+            if u.role.permissions == Permission.GENERAL:
+                u.application = Application.generate_fake()
             db.session.add(u)
             try:
                 db.session.commit()
