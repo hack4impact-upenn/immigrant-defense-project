@@ -20,11 +20,14 @@ def permission_required(permission):
 
     return decorator
 
+
 def admin_required(f):
     return permission_required(Permission.ADMIN)(f)
 
+
 def advisor_required(f):
     return permission_required(Permission.ADVISOR)(f)
+
 
 def screener_required(f):
     return permission_required(Permission.SCREENER)(f)

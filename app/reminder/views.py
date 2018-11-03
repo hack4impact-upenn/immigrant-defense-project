@@ -1,20 +1,14 @@
 import datetime
 
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
+from flask_login import login_required
 
-from .forms import NewReminderForm
+from app.decorators import *
+
 from .. import db
 from ..models import Reminder
-from flask_login import login_required
-from app.decorators import *
+from .forms import NewReminderForm
 
 reminder = Blueprint('reminder', __name__)
 
@@ -23,7 +17,8 @@ reminder = Blueprint('reminder', __name__)
 @login_required
 def dashboard():
     """Dashboard to view and add text and email reminders."""
-    return render_template('reminder/index.html', reminders=Reminder.query.all())
+    return render_template(
+        'reminder/index.html', reminders=Reminder.query.all())
 
 
 @reminder.route('/new', methods=['GET', 'POST'])
@@ -39,8 +34,7 @@ def new_form():
             title=form.title.data,
             content=form.content.data,
             date=form.date.data,
-            time=datetime.time(hour=hour)
-        )
+            time=datetime.time(hour=hour))
         db.session.add(reminder)
         try:  # TODO: Add flashes
             db.session.commit()

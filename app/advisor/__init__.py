@@ -1,1 +1,1 @@
-from app.advisor.views import advisor # noqa
+from app.advisor.views import advisor  # noqa
