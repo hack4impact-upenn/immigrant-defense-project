@@ -14,6 +14,8 @@ from app.screening.forms import (
     ScreeningQuestionForm
 )
 from app.models import ScreeningQuestion
+from flask_login import login_required
+from app.decorators import *
 
 screening = Blueprint('screening', __name__)
 
@@ -24,6 +26,8 @@ def index():
     return render_template('screening/index.html', screening_questions=screening_questions)
 
 @screening.route('/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_screening_question():
     form = ScreeningQuestionForm()
     type = "Add New"
@@ -38,6 +42,8 @@ def add_screening_question():
     return render_template('screening/add_screening_question.html', form=form, type=type)
 
 @screening.route('/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit_screening_question(id):
     """Edit a screening question's title and description."""
     screening_question = ScreeningQuestion.query.get(id)
@@ -61,6 +67,8 @@ def edit_screening_question(id):
 
 
 @screening.route('/<int:id>/delete')
+@login_required
+@admin_required
 def delete_screening_question(id):
     """Deletes the screening question"""
     screening_question = ScreeningQuestion.query.get(id)
