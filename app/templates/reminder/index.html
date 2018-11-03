@@ -4,7 +4,10 @@
 {% block content %}
 <div class="ui stackable grid container">
     <div class="sixteen wide tablet twelve wide computer centered column">
-        <br />
+        <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+            <i class="caret left icon"></i>
+            Back to dashboard
+        </a>
         <h2 class="ui header">
             Manage Reminders
             <div class="sub header">

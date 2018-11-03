@@ -19,7 +19,7 @@ from app.admin.forms import (
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import EditableHTML, Role, User
+from app.models import EditableHTML, Role, User, Application, DefaultChecklistItem, ScreeningQuestion, Reminder
 
 admin = Blueprint('admin', __name__)
 
@@ -196,3 +196,33 @@ def update_editor_contents():
     db.session.commit()
 
     return 'OK', 200
+
+@admin.route('/all_applications', methods=['GET'])
+@login_required
+@admin_required
+def all_applications():
+    """ A table of all the applications """
+    application = Application.query.all()
+    return render_template('application/dashboard.html', applicants=application)
+
+@admin.route('/manage_default_checklist', methods=['GET'])
+@login_required
+@admin_required
+def manage_default_checklist():
+    """ Manage default checklist items """
+    default_checklist_items = DefaultChecklistItem.query.all()
+    return render_template('checklist/index.html', default_checklist_items=default_checklist_items)
+
+@admin.route('/manage_screening_questions', methods=['GET'])
+@login_required
+@admin_required
+def manage_screening_questions():
+    screening_questions = ScreeningQuestion.query.all()
+    return render_template('screening/index.html', screening_questions=screening_questions)
+
+@admin.route('/manage_reminders', methods=['GET'])
+@login_required
+@admin_required
+def manage_reminders():
+    reminders = Reminder.query.all()
+    return render_template('reminder/index.html', reminders=reminders)
