@@ -20,6 +20,7 @@ from app.decorators import *
 screening = Blueprint('screening', __name__)
 
 @screening.route('/')
+@login_required
 def index():
     """Screening page."""
     screening_questions = ScreeningQuestion.query.all()

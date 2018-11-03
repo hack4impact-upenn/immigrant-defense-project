@@ -13,17 +13,22 @@ from flask import (
 from .forms import NewReminderForm
 from .. import db
 from ..models import Reminder
+from flask_login import login_required
+from app.decorators import *
 
 reminder = Blueprint('reminder', __name__)
 
 
 @reminder.route('/', methods=['GET'])
+@login_required
 def dashboard():
     """Dashboard to view and add text and email reminders."""
     return render_template('reminder/index.html', reminders=Reminder.query.all())
 
 
 @reminder.route('/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def new_form():
     """Create a new reminder."""
     form = NewReminderForm()
