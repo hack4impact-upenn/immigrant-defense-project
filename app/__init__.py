@@ -75,6 +75,9 @@ def create_app(config_name):
     from .advisor import advisor as advisor_blueprint
     app.register_blueprint(advisor_blueprint, url_prefix='/advisor')
 
+    from .application import application as application_blueprint
+    app.register_blueprint(application_blueprint, url_prefix='/application')
+
     from .checklist import checklist as checklist_blueprint
     app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
 

@@ -1,11 +1,11 @@
 from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
-from itsdangerous import BadSignature, SignatureExpired
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import applicant_profile
 from .. import db, login_manager
+from . import applicant_profile
 
 
 class Permission:
@@ -27,9 +27,21 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.GENERAL, 'main', True),
-            'Screener': (Permission.SCREENER, 'screener', False),
-            'Advisor': (Permission.ADVISOR, 'advisor', False),
+            'User': (
+                Permission.GENERAL,
+                'main',
+                True
+            ),
+            'Screener': (
+                Permission.SCREENER,
+                'screener',
+                False
+            ),
+            'Advisor': (
+                Permission.ADVISOR,
+                'advisor',
+                False
+            ),
             'Administrator': (
                 Permission.ADMIN,
                 'admin',
@@ -60,10 +72,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    applicant_profile_id = db.Column(db.Integer,
-                                     db.ForeignKey('applicant_profile.id'))
-    applicant_profile = db.relationship(
-        "ApplicantProfile", uselist=False, back_populates="user")
+    applicant_profile_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
+    applicant_profile = db.relationship("ApplicantProfile", uselist = False, back_populates="user")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
