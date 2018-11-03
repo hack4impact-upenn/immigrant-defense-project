@@ -33,10 +33,10 @@ class UserChecklistItem(db.Model):
     title = db.Column(db.String(64))
     description = db.Column(db.Text)
     completed = db.Column(db.Boolean, index=True, default=False)
-    applicant_profile_id = db.Column(db.ForeignKey('applicant_profile.id'))
+    application_id = db.Column(db.ForeignKey('application.id'))
     documents = db.relationship('Document', backref='user_checklist_item', lazy=True)
 
-    # TODO: may be changed once relations between applicant_profile and user
+    # TODO: may be changed once relations between application and user
     # are hashed out
     @staticmethod
     def generate_fake(count=5):
