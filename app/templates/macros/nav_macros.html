@@ -25,28 +25,32 @@
       {% if current_user.is_admin() %}
         {% set endpoints = ([
           ('admin.index', 'Dashboard', 'user'),
+          ('application.index', 'Applications', 'file outline'),
           ('checklist.index', 'Checklist', 'list ui'),
           ('screening.index', 'Screening Questions', 'question'),
-          ('reminder.dashboard', 'Reminders', 'bell'),
+          ('screening.index', 'Questionaire Responses', 'question'),
+          ('reminder.dashboard', 'Reminders', 'bell')
           ])%}
-        {# TODO: ADD ('application.index', 'Applications', 'file outline') #}
         {# TODO: view questionaire responses #}
       {% elif current_user.is_advisor() %}
         {% set endpoints = ([
           ('admin.index', 'Dashboard', 'user'),
+          ('checklist.index', 'Checklist', 'list ui'),
           ('reminder.dashboard', 'Reminders', 'bell'),
+          ('screening.index', 'Questionaire Responses', 'question'),
         ])%}
-        {# TODO: view questionaire responses #}
         {# TODO: client checklist items #}
       {% elif current_user.is_screener() %}
         {% set endpoints = ([
           ('screener.index', 'Dashboard', 'user'),
+          ('screening.index', 'Questionaire Responses', 'question'),
         ])%}
-        {# TODO: view questionaire responses #}
       {% elif current_user.is_applicant() %}
-        {# TODO: create questionaire #}
-        {# TODO: checklist items #}
-        {# TODO: ADD ('application.index', 'Application', 'file outline') #}
+        {% set endpoints = ([
+          ('application.index', 'Application', 'file outline'),
+          ('screening.index', 'Questionaire', 'question'),
+          ('checklist.index', 'Checklist', 'list ui'),
+        ])%}
       {% endif %}
     {% else %}
       {% set endpoints = [
