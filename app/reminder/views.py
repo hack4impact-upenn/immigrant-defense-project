@@ -12,7 +12,6 @@ from app.decorators import *
 
 from .. import db
 from ..models import Reminder
-from .forms import NewReminderForm
 
 from sqlalchemy.exc import IntegrityError
 
