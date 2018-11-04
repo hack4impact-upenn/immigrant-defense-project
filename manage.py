@@ -12,7 +12,7 @@ from rq import Connection, Queue, Worker
 
 from app import create_app, db
 from app.models import (DefaultChecklistItem, Reminder, Role, User,
-                        UserChecklistItem)
+                        UserChecklistItem, ScreeningQuestion, ScreeningAnswer, Application)
 from app.sms import check_reminders
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -62,7 +62,7 @@ def add_fake_data(number_users):
     User.generate_fake(count=number_users)
     Reminder.generate_fake()
     DefaultChecklistItem.generate_fake()
-    UserChecklistItem.generate_fake()
+    ScreeningQuestion.generate_fake()
 
 
 @manager.command

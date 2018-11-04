@@ -47,7 +47,7 @@ def edit_screening_question(id):
             db.session.rollback()
             flash('Error Occurred. Please try again.', 'form-error')
         return render_template('screening/add_screening_question.html', form=form, type=type)
-    screening_question.question = form.question.data
+    form.question.data = screening_question.question
     return render_template('screening/add_screening_question.html', form=form, type=type)
 
 
