@@ -7,9 +7,6 @@ from app.models import DefaultChecklistItem
 
 
 class DefaultChecklistItemForm(Form):
-    title = StringField(
-        validators=[InputRequired(),
-                    Length(1, 64)])
-    description = TextAreaField(
-        validators=[InputRequired()])
+    title = StringField(validators=[InputRequired(), Length(1, 64)])
+    description = TextAreaField(validators=[InputRequired()])
     submit = SubmitField()

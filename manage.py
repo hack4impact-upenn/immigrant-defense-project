@@ -130,6 +130,7 @@ def setup_general():
             db.session.commit()
             print('Added applicant {}'.format(user.full_name()))
 
+
 @manager.command
 def run_worker():
     """Initializes a slim rq task queue."""

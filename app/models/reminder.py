@@ -23,7 +23,8 @@ class Reminder(db.Model):
     def generate_fake(count=3):
         for i in range(1, count + 1):
             # randomly generate a reminder datetime to be within 1-3 minutes from now
-            soon = datetime.datetime.now() + datetime.timedelta(seconds=random.randint(60, 180))
+            soon = datetime.datetime.now() + datetime.timedelta(
+                seconds=random.randint(60, 180))
             reminder = Reminder(
                 title=f'Reminder {i}',
                 content=f'Please make sure to complete Task #{i}.',

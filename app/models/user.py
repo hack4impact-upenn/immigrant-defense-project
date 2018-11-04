@@ -74,7 +74,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
-    application = db.relationship('Application', uselist=False, back_populates='user')
+    application = db.relationship("Application", uselist = False, back_populates="user")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
