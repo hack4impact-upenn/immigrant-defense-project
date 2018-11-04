@@ -1,18 +1,18 @@
 from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from . import applicant_profile
+from .application import Application
 
 
 class Permission:
-    GENERAL = 0x01 #Applicants
+    GENERAL = 0x01
     SCREENER = 0x02
     ADVISOR = 0x03
-    ADMINISTER = 0x04 #04 was ff before
+    ADMIN = 0x04
 
 
 class Role(db.Model):
@@ -27,11 +27,10 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.GENERAL, 'main', True), #Applicants
-            'Administrator': (
-                Permission.ADMINISTER,
-                'admin',
-                True  # grants all permissions
+            'User': (
+                Permission.GENERAL,
+                'main',
+                True
             ),
             'Screener': (
                 Permission.SCREENER,
@@ -42,7 +41,12 @@ class Role(db.Model):
                 Permission.ADVISOR,
                 'advisor',
                 False
-            )
+            ),
+            'Administrator': (
+                Permission.ADMIN,
+                'admin',
+                True  # grants all permissions
+            ),
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -68,23 +72,20 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    applicant_profile_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
-    applicant_profile = db.relationship("ApplicantProfile", uselist = False, back_populates="user")
+    application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
+    application = db.relationship('Application', uselist=False, back_populates='user')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['ADMIN_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADMINISTER).first()
+                self.role = Role.query.filter_by(index='admin').first()
             if self.email == current_app.config['SCREENER_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADVISOR).first()
+                self.role = Role.query.filter_by(index='screener').first()
             if self.email == current_app.config['ADVISOR_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADVISOR).first()
+                self.role = Role.query.filter_by(index='advisor').first()
             if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
+                self.role = Role.query.filter_by(index='main').first()
 
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -93,17 +94,17 @@ class User(UserMixin, db.Model):
         return self.role is not None and \
             (self.role.permissions & permissions) == permissions
 
-    def is_admin(self):
-        return self.role_id == 4
-
     def is_applicant(self):
         return self.role_id == 1
+
+    def is_screener(self):
+        return self.role_id == 2
 
     def is_advisor(self):
         return self.role_id == 3
 
-    def is_screener(self):
-        return self.role_id == 2
+    def is_admin(self):
+        return self.role_id == 4
 
     @property
     def password(self):
@@ -189,8 +190,9 @@ class User(UserMixin, db.Model):
         from faker import Faker
 
         fake = Faker()
+        Role.insert_roles()
         roles = Role.query.all()
-
+        
         seed()
         for i in range(count):
             role = choice(roles)
@@ -202,8 +204,8 @@ class User(UserMixin, db.Model):
                 confirmed=True,
                 role=role,
                 **kwargs)
-            if role.name == 'User':
-                u.applicant_profile = ApplicantProfile.generate_fake()
+            if u.role.permissions == Permission.GENERAL:
+                u.application = Application.generate_fake()
             db.session.add(u)
             try:
                 db.session.commit()
