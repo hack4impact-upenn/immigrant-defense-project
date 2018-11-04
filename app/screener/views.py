@@ -1,8 +1,6 @@
-from flask import (
-    Blueprint,
-    render_template,
-)
+from flask import Blueprint, render_template
 from flask_login import login_required
+
 from app.decorators import screener_required
 
 screener = Blueprint('screener', __name__)

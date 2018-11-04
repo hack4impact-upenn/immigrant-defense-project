@@ -1,12 +1,5 @@
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required
 from flask_rq import get_queue
 
@@ -35,7 +28,7 @@ def index():
 def view(user_id):
     if current_user.is_applicant() and current_user.id != user_id:
         return redirect(404)
-    application = Application.query.filter_by(user=current_user).first()
-    if not application:
+    user = User.query.get(user_id)
+    if not user.application:
         return redirect(404)
-    return render_template('application/profile.html', application=application)
+    return render_template('application/profile.html', application=user.application)

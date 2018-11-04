@@ -1,7 +1,7 @@
 from flask import url_for
+from wtforms.compat import text_type
 from wtforms.fields import Field
 from wtforms.widgets import HiddenInput
-from wtforms.compat import text_type
 
 
 def register_template_utils(app):
@@ -26,8 +26,13 @@ def index_for_role(role):
 class CustomSelectField(Field):
     widget = HiddenInput()
 
-    def __init__(self, label='', validators=None, multiple=False,
-                 choices=[], allow_custom=True, **kwargs):
+    def __init__(self,
+                 label='',
+                 validators=None,
+                 multiple=False,
+                 choices=[],
+                 allow_custom=True,
+                 **kwargs):
         super(CustomSelectField, self).__init__(label, validators, **kwargs)
         self.multiple = multiple
         self.choices = choices
