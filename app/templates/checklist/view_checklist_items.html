@@ -36,12 +36,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for c in default_checklist_items %}
-                    <tr>
-                        <td>{{ c.title }}</td>
-                        <td>{{ c.description }}</td>
-                    </tr>
-                {% endfor %}
                 {% for c in user_checklist_items %}
                     <tr>
                         <td>{{ c.title }}</td>

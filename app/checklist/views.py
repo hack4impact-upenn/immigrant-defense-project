@@ -90,14 +90,14 @@ def delete_default_checklist_item(id):
     return redirect(url_for('checklist.index'))
 
 
-@checklist.route('/<int:id>/view', methods=['GET'])
-def view_all_checklist_items(id):
+@checklist.route('/<int:user_id>/view', methods=['GET'])
+def view_all_checklist_items(user_id):
     """View all checklist items, specific to each user"""
-    default_checklist_items = DefaultChecklistItem.query.all()
-    user_checklist_items = UserChecklistItem.query.filter_by(application_id=id)
+    """Finding user, then accessing application"""
+    user = User.query.get(user_id)
+    if user is None or user.application is None:
+        abort(404)
+    user_checklist_items = UserChecklistItem.query.filter_by(application_id=user.application.id)
     return render_template(
         'checklist/view_checklist_items.html',
-        default_checklist_items=default_checklist_items,
         user_checklist_items=user_checklist_items)
-
-
