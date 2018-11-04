@@ -3,9 +3,6 @@ import datetime
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
 
-from .. import db
-from ..models import Reminder
-from .forms import NewReminderForm
 from flask_login import login_required
 
 from app.decorators import *
