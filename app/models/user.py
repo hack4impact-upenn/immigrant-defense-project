@@ -1,7 +1,7 @@
 from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
@@ -27,21 +27,9 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (
-                Permission.GENERAL,
-                'main',
-                True
-            ),
-            'Screener': (
-                Permission.SCREENER,
-                'screener',
-                False
-            ),
-            'Advisor': (
-                Permission.ADVISOR,
-                'advisor',
-                False
-            ),
+            'User': (Permission.GENERAL, 'main', True),
+            'Screener': (Permission.SCREENER, 'screener', False),
+            'Advisor': (Permission.ADVISOR, 'advisor', False),
             'Administrator': (
                 Permission.ADMIN,
                 'admin',
@@ -73,7 +61,8 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
-    application = db.relationship('Application', uselist=False, back_populates='user')
+    application = db.relationship(
+        'Application', uselist=False, back_populates='user')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -192,7 +181,7 @@ class User(UserMixin, db.Model):
         fake = Faker()
         Role.insert_roles()
         roles = Role.query.all()
-        
+
         seed()
         for i in range(count):
             role = choice(roles)

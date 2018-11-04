@@ -1,12 +1,5 @@
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required
 from flask_rq import get_queue
 
@@ -14,6 +7,7 @@ from app import db
 from app.models import Application, User
 
 application = Blueprint('application', __name__)
+
 
 @login_required
 @application.route('/')

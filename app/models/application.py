@@ -1,5 +1,7 @@
-from .. import db
 from sqlalchemy.orm import validates
+
+from .. import db
+
 
 class Application(db.Model):
     __tablename__ = 'application'
@@ -9,7 +11,8 @@ class Application(db.Model):
     # PERSONAL INFO
     phone_number = db.Column(db.String(15), index=True)
     legal_advisor = db.relationship('User')
-    user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
+    user_checklist_items = db.relationship(
+        'UserChecklistItem', backref='application', lazy=True)
 
     @staticmethod
     def generate_fake():

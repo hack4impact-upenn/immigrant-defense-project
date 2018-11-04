@@ -1,25 +1,15 @@
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required
 from flask_rq import get_queue
 
 from app import db
-from app.admin.forms import (
-    ChangeAccountTypeForm,
-    ChangeUserEmailForm,
-    InviteUserForm,
-    NewUserForm,
-)
+from app.admin.forms import (ChangeAccountTypeForm, ChangeUserEmailForm,
+                             InviteUserForm, NewUserForm)
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import EditableHTML, Role, User, Application, DefaultChecklistItem, ScreeningQuestion, Reminder
+from app.models import (Application, DefaultChecklistItem, EditableHTML,
+                        Reminder, Role, ScreeningQuestion, User)
 
 admin = Blueprint('admin', __name__)
 
@@ -121,8 +111,9 @@ def change_user_email(user_id):
         user.email = form.email.data
         db.session.add(user)
         db.session.commit()
-        flash('Email for user {} successfully changed to {}.'.format(
-            user.full_name(), user.email), 'form-success')
+        flash(
+            'Email for user {} successfully changed to {}.'.format(
+                user.full_name(), user.email), 'form-success')
     return render_template('admin/manage_user.html', user=user, form=form)
 
 
@@ -133,8 +124,9 @@ def change_user_email(user_id):
 def change_account_type(user_id):
     """Change a user's account type."""
     if current_user.id == user_id:
-        flash('You cannot change the type of your own account. Please ask '
-              'another administrator to do this.', 'error')
+        flash(
+            'You cannot change the type of your own account. Please ask '
+            'another administrator to do this.', 'error')
         return redirect(url_for('admin.user_info', user_id=user_id))
 
     user = User.query.get(user_id)
@@ -145,8 +137,9 @@ def change_account_type(user_id):
         user.role = form.role.data
         db.session.add(user)
         db.session.commit()
-        flash('Role for user {} successfully changed to {}.'.format(
-            user.full_name(), user.role.name), 'form-success')
+        flash(
+            'Role for user {} successfully changed to {}.'.format(
+                user.full_name(), user.role.name), 'form-success')
     return render_template('admin/manage_user.html', user=user, form=form)
 
 
@@ -167,8 +160,9 @@ def delete_user_request(user_id):
 def delete_user(user_id):
     """Delete a user's account."""
     if current_user.id == user_id:
-        flash('You cannot delete your own account. Please ask another '
-              'administrator to do this.', 'error')
+        flash(
+            'You cannot delete your own account. Please ask another '
+            'administrator to do this.', 'error')
     else:
         user = User.query.filter_by(id=user_id).first()
         db.session.delete(user)
@@ -197,6 +191,7 @@ def update_editor_contents():
 
     return 'OK', 200
 
+
 @admin.route('/all_applications', methods=['GET'])
 @login_required
 @admin_required
@@ -204,7 +199,9 @@ def all_applications():
     """ A table of all the applications """
     applications = Application.query.all()
     user = User.query.join(Application).all()
-    return render_template('application/dashboard.html', applicants=applications, user=user)
+    return render_template(
+        'application/dashboard.html', applicants=applications, user=user)
+
 
 @admin.route('/manage_default_checklist', methods=['GET'])
 @login_required
@@ -212,14 +209,19 @@ def all_applications():
 def manage_default_checklist():
     """ Manage default checklist items """
     default_checklist_items = DefaultChecklistItem.query.all()
-    return render_template('checklist/index.html', default_checklist_items=default_checklist_items)
+    return render_template(
+        'checklist/index.html',
+        default_checklist_items=default_checklist_items)
+
 
 @admin.route('/manage_screening_questions', methods=['GET'])
 @login_required
 @admin_required
 def manage_screening_questions():
     screening_questions = ScreeningQuestion.query.all()
-    return render_template('screening/index.html', screening_questions=screening_questions)
+    return render_template(
+        'screening/index.html', screening_questions=screening_questions)
+
 
 @admin.route('/manage_reminders', methods=['GET'])
 @login_required

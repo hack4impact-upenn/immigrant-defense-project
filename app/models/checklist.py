@@ -17,9 +17,7 @@ class DefaultChecklistItem(db.Model):
         seed()
         for i in range(count):
             item = DefaultChecklistItem(
-                title=fake.word(),
-                description=fake.sentence()
-            )
+                title=fake.word(), description=fake.sentence())
             db.session.add(item)
             try:
                 db.session.commit()
@@ -34,7 +32,8 @@ class UserChecklistItem(db.Model):
     description = db.Column(db.Text)
     completed = db.Column(db.Boolean, index=True, default=False)
     application_id = db.Column(db.ForeignKey('application.id'))
-    documents = db.relationship('Document', backref='user_checklist_item', lazy=True)
+    documents = db.relationship(
+        'Document', backref='user_checklist_item', lazy=True)
 
     # TODO: may be changed once relations between application and user
     # are hashed out
@@ -48,9 +47,7 @@ class UserChecklistItem(db.Model):
         seed()
         for i in range(count):
             item = UserChecklistItem(
-                title=fake.word(),
-                description=fake.sentence()
-            )
+                title=fake.word(), description=fake.sentence())
             db.session.add(item)
             try:
                 db.session.commit()
@@ -58,4 +55,5 @@ class UserChecklistItem(db.Model):
                 db.session.rollback()
 
     def __repr__(self):
-        return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(self.title, self.description, self.completed, self.document)
+        return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(
+            self.title, self.description, self.completed, self.document)

@@ -1,20 +1,11 @@
-from flask import (
-    abort,
-    Blueprint,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.checklist.forms import (
-    DefaultChecklistItemForm,
-)
-from app.models import DefaultChecklistItem
+from app.checklist.forms import DefaultChecklistItemForm
 from app.decorators import admin_required
+from app.models import DefaultChecklistItem
 
 checklist = Blueprint('checklist', __name__)
 
@@ -24,7 +15,9 @@ checklist = Blueprint('checklist', __name__)
 def index():
     """Default checklist page."""
     default_checklist_items = DefaultChecklistItem.query.all()
-    return render_template('checklist/index.html', default_checklist_items=default_checklist_items)
+    return render_template(
+        'checklist/index.html',
+        default_checklist_items=default_checklist_items)
 
 
 @checklist.route('/add', methods=['GET', 'POST'])
@@ -35,14 +28,16 @@ def add_default_checklist_item():
     type = "Add New"
     if form.validate_on_submit():
         default_checklist_item = DefaultChecklistItem(
-            title=form.title.data,
-            description=form.description.data)
+            title=form.title.data, description=form.description.data)
         db.session.add(default_checklist_item)
         db.session.commit()
-        flash('Default checklist item {} successfully created'.format(default_checklist_item.title),
-              'form-success')
-        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
-    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+        flash(
+            'Default checklist item {} successfully created'.format(
+                default_checklist_item.title), 'form-success')
+        return render_template(
+            'checklist/edit_checklist_item.html', form=form, type=type)
+    return render_template(
+        'checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>', methods=['GET', 'POST'])
@@ -60,15 +55,18 @@ def edit_default_checklist_item(id):
         default_checklist_item.description = form.description.data
         try:
             db.session.commit()
-            flash('Default checklist item {} successfully changed.'.format(old_title),
-                'form-success')
+            flash(
+                'Default checklist item {} successfully changed.'.format(
+                    old_title), 'form-success')
         except IntegrityError:
             db.session.rollback()
             flash('Error Occurred. Please try again.', 'form-error')
-        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+        return render_template(
+            'checklist/edit_checklist_item.html', form=form, type=type)
     form.title.data = default_checklist_item.title
     form.description.data = default_checklist_item.description
-    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+    return render_template(
+        'checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>/delete')
@@ -81,8 +79,9 @@ def delete_default_checklist_item(id):
     db.session.delete(default_checklist_item)
     try:
         db.session.commit()
-        flash('Successfully deleted default checklist item %s.' % default_checklist_item.title,
-                'success')
+        flash(
+            'Successfully deleted default checklist item %s.' %
+            default_checklist_item.title, 'success')
     except IntegrityError:
         db.session.rollback()
         flash('Error occurred. Please try again.', 'form-error')

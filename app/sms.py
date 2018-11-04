@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
 import os
 import re
+from datetime import datetime, timedelta
+
 from twilio.rest import Client
 
 from app import create_app, db
@@ -26,7 +27,8 @@ def check_reminders():
     with app.app_context():
         next = next_timestamp(datetime.now())
         reminders = []
-        for reminder in Reminder.query.filter_by(date=next.date(), sent=False).all():
+        for reminder in Reminder.query.filter_by(
+                date=next.date(), sent=False).all():
             if reminder.time.hour == next.hour:
                 reminders.append(reminder)
                 reminder.sent = True
@@ -46,15 +48,18 @@ def check_reminders():
         auth_token = os.environ.get('TWILIO_AUTH_TOKEN') or None
         twilio_phone = os.environ.get('TWILIO_PHONE_NO') or None
         if None in [account_sid, auth_token, twilio_phone]:
-            print('Add TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NO to config.env file.')
+            print(
+                'Add TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NO to config.env file.'
+            )
             return
 
         # Send SMS
         client = Client(account_sid, auth_token)
         for reminder in reminders:
-            print(f'Send reminder "{reminder.content}" to {format_phone(phone_number)}')
+            print(
+                f'Send reminder "{reminder.content}" to {format_phone(phone_number)}'
+            )
             client.messages.create(
                 to=format_phone(phone_number),
                 from_=twilio_phone,
-                body=reminder.content
-            )
+                body=reminder.content)
