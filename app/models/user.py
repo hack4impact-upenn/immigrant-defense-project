@@ -57,12 +57,12 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    phone_number = db.Column(db.String(32), index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
-    application = db.relationship(
-        'Application', uselist=False, back_populates='user')
+    application = db.relationship("Application", uselist = False, back_populates="user")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -189,12 +189,13 @@ class User(UserMixin, db.Model):
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=fake.email(),
+                phone_number=fake.phone_number(),
                 password='password',
                 confirmed=True,
                 role=role,
                 **kwargs)
             if u.role.permissions == Permission.GENERAL:
-                u.application = Application.generate_fake()
+                u.application = Application()
             db.session.add(u)
             try:
                 db.session.commit()

@@ -1,5 +1,7 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+
+from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -11,6 +13,7 @@ checklist = Blueprint('checklist', __name__)
 
 
 @checklist.route('/')
+@login_required
 @admin_required
 def index():
     """Default checklist page."""
@@ -21,6 +24,7 @@ def index():
 
 
 @checklist.route('/add', methods=['GET', 'POST'])
+@login_required
 @admin_required
 def add_default_checklist_item():
     """Add a new default checklist item."""
@@ -41,6 +45,7 @@ def add_default_checklist_item():
 
 
 @checklist.route('/<int:id>', methods=['GET', 'POST'])
+@login_required
 @admin_required
 def edit_default_checklist_item(id):
     """Edit a default checklist item's title and description."""
@@ -70,6 +75,7 @@ def edit_default_checklist_item(id):
 
 
 @checklist.route('/<int:id>/delete')
+@login_required
 @admin_required
 def delete_default_checklist_item(id):
     """Deletes the default checklist item"""

@@ -1,5 +1,11 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+
+from flask_login import login_required
+from sqlalchemy.exc import IntegrityError
+
+from app import db
+from app.decorators import *
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -10,6 +16,7 @@ screening = Blueprint('screening', __name__)
 
 
 @screening.route('/')
+@login_required
 def index():
     """Screening page."""
     screening_questions = ScreeningQuestion.query.all()
@@ -18,6 +25,8 @@ def index():
 
 
 @screening.route('/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_screening_question():
     form = ScreeningQuestionForm()
     type = "Add New"
@@ -33,6 +42,8 @@ def add_screening_question():
 
 
 @screening.route('/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit_screening_question(id):
     """Edit a screening question's title and description."""
     screening_question = ScreeningQuestion.query.get(id)
@@ -57,6 +68,8 @@ def edit_screening_question(id):
 
 
 @screening.route('/<int:id>/delete')
+@login_required
+@admin_required
 def delete_screening_question(id):
     """Deletes the screening question"""
     screening_question = ScreeningQuestion.query.get(id)
