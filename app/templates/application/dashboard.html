@@ -37,8 +37,8 @@
                 <tbody>
                 {% for a in applicants %}
                     <tr>
-                        <td>{{ a.first_name }}</td>
-                        <td>{{ a.user }}</td>
+                        <td>{{ user[loop.index0].first_name }}</td>
+                        <td>{{ user[loop.index0].last_name }}</td>
                         <td>{{ a.phone_number }}</td>
                     </tr>
                 {% endfor %}
