@@ -1,18 +1,11 @@
 import datetime
 
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 
-from .forms import NewReminderForm
 from .. import db
 from ..models import Reminder
+from .forms import NewReminderForm
 
 reminder = Blueprint('reminder', __name__)
 

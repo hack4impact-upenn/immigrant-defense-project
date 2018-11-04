@@ -1,8 +1,9 @@
 import itertools
+
 from flask_wtf import Form
 from wtforms.fields import SelectField, StringField, SubmitField, TextAreaField
-from wtforms.validators import InputRequired, Length
 from wtforms.fields.html5 import DateField
+from wtforms.validators import InputRequired, Length
 
 
 class NewReminderForm(Form):
