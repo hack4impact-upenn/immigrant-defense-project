@@ -18,6 +18,18 @@ class SendNewReminderForm(Form):
     submit = SubmitField('Send Now')
 
 
+class SendNewReminderForm(Form):
+    title = StringField(
+        'Reminder title',
+        validators=[InputRequired(), Length(1, 64)]
+    )
+    content = TextAreaField(
+        'Content',
+        validators=[InputRequired()]
+    )
+    submit = SubmitField('Send Now')
+
+
 class ScheduleNewReminderForm(Form):
     title = StringField(
         'Reminder title',
