@@ -192,10 +192,10 @@ def update_editor_contents():
     return 'OK', 200
 
 
-@admin.route('/all_applications', methods=['GET'])
+@admin.route('/view_applications', methods=['GET'])
 @login_required
 @admin_required
-def all_applications():
+def view_applications():
     """ A table of all the applications """
     applications = Application.query.all()
     user = User.query.join(Application).all()
