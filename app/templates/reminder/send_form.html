@@ -1,0 +1,18 @@
+{% import 'macros/page_macros.html' as page %}
+{% import 'macros/form_macros.html' as f %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="ui stackable grid container">
+    <div class="sixteen wide tablet twelve wide computer centered column">
+        <br />
+        <a class="ui basic compact button" href="{{ url_for('reminder.dashboard') }}">
+            <i class="caret left icon"></i>
+            Back to all reminders
+        </a>
+        <h1>Add New Reminder</h1>
+
+        {{ f.render_form(form) }}
+    </div>
+</div>
+{% endblock %}

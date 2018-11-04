@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 import os
 import subprocess
+from config import Config
+from datetime import datetime
 
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 from redis import Redis
 from rq import Connection, Queue, Worker
-from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime
 
 from app import create_app, db
-from app.models import DefaultChecklistItem, Reminder, Role, User, UserChecklistItem
+from app.models import (DefaultChecklistItem, Reminder, Role, User,
+                        UserChecklistItem)
 from app.sms import check_reminders
-from config import Config
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)

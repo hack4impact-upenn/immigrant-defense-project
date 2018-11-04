@@ -1,5 +1,7 @@
-from .. import db
 from sqlalchemy.orm import validates
+
+from .. import db
+
 
 class Application(db.Model):
     __tablename__ = 'application'

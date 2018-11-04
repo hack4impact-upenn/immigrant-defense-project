@@ -1,19 +1,10 @@
-from flask import (
-    Blueprint,
-    abort,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.screening.forms import (
-    ScreeningQuestionForm
-)
 from app.models import ScreeningQuestion
+from app.screening.forms import ScreeningQuestionForm
 
 screening = Blueprint('screening', __name__)
 

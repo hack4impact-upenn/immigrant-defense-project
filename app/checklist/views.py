@@ -1,20 +1,11 @@
-from flask import (
-    abort,
-    Blueprint,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.checklist.forms import (
-    DefaultChecklistItemForm,
-)
-from app.models import DefaultChecklistItem
+from app.checklist.forms import DefaultChecklistItemForm
 from app.decorators import admin_required
+from app.models import DefaultChecklistItem
 
 checklist = Blueprint('checklist', __name__)
 
