@@ -197,10 +197,9 @@ def update_editor_contents():
 @admin_required
 def view_applications():
     """ A table of all the applications """
-    applications = Application.query.all()
-    user = User.query.join(Application).all()
+    user = User.query.join(Application).filter(User.application_id != None).all()
     return render_template(
-        'application/dashboard.html', applicants=applications, user=user)
+        'application/dashboard.html', user=user)
 
 
 @admin.route('/manage_default_checklist', methods=['GET'])

@@ -35,11 +35,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for a in applicants %}
+                {% for u in user %}
                     <tr>
-                        <td>{{ user[loop.index0].first_name }}</td>
-                        <td>{{ user[loop.index0].last_name }}</td>
-                        <td>{{ a.phone_number }}</td>
+                        <td>{{ u.first_name }}</td>
+                        <td>{{ u.last_name }}</td>
+                        <td>{{ u.phone_number }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
