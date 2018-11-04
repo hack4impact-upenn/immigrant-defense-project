@@ -69,6 +69,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    phone_number = db.Column(db.String(32), index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
@@ -192,7 +193,7 @@ class User(UserMixin, db.Model):
         fake = Faker()
         Role.insert_roles()
         roles = Role.query.all()
-        
+
         seed()
         for i in range(count):
             role = choice(roles)
@@ -200,12 +201,13 @@ class User(UserMixin, db.Model):
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=fake.email(),
+                phone_number=fake.phone_number(),
                 password='password',
                 confirmed=True,
                 role=role,
                 **kwargs)
             if u.role.permissions == Permission.GENERAL:
-                u.application = Application.generate_fake()
+                u.application = Application()
             db.session.add(u)
             try:
                 db.session.commit()
