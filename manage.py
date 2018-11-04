@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 import os
 import subprocess
-<<<<<<< HEAD
-=======
 from config import Config
->>>>>>> 882a31674844ecdd8918023c81b03fe387a93548
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
