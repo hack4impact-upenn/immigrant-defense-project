@@ -1,10 +1,14 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+
 from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.decorators import *
+from sqlalchemy.exc import IntegrityError
+
+from app import db
 from app.models import ScreeningQuestion
 from app.screening.forms import ScreeningQuestionForm
 

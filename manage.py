@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import os
 import subprocess
+<<<<<<< HEAD
+=======
+from config import Config
+>>>>>>> 704ba1d7c51fca78ab82630b9e55d796f713b58f
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -13,7 +17,6 @@ from app import create_app, db
 from app.models import (DefaultChecklistItem, Reminder, Role, User,
                         UserChecklistItem)
 from app.sms import check_reminders
-from config import Config
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
