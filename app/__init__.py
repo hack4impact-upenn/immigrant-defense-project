@@ -81,8 +81,8 @@ def create_app(config_name):
     from .checklist import checklist as checklist_blueprint
     app.register_blueprint(checklist_blueprint, url_prefix='/checklist')
 
-    from .screener import screener as screener_blueprint
-    app.register_blueprint(screener_blueprint, url_prefix='/screener')
+    from .partner import partner as partner_blueprint
+    app.register_blueprint(partner_blueprint, url_prefix='/partner')
 
     from .screening import screening as screening_blueprint
     app.register_blueprint(screening_blueprint, url_prefix='/screening')

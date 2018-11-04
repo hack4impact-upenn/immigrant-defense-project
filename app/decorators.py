@@ -26,5 +26,5 @@ def admin_required(f):
 def advisor_required(f):
     return permission_required(Permission.ADVISOR)(f)
 
-def screener_required(f):
-    return permission_required(Permission.SCREENER)(f)
+def partner_required(f):
+    return permission_required(Permission.PARTNER)(f)

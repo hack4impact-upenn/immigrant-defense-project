@@ -10,7 +10,7 @@ from .application import Application
 
 class Permission:
     GENERAL = 0x01
-    SCREENER = 0x02
+    PARTNER = 0x02
     ADVISOR = 0x03
     ADMIN = 0x04
 
@@ -28,13 +28,13 @@ class Role(db.Model):
     def insert_roles():
         roles = {
             'User': (
-                Permission.GENERAL,
+                Permission.APPLICANT,
                 'main',
                 True
             ),
-            'Screener': (
-                Permission.SCREENER,
-                'screener',
+            'Partner': (
+                Permission.PARTNER,
+                'partner',
                 False
             ),
             'Advisor': (
@@ -81,8 +81,8 @@ class User(UserMixin, db.Model):
         if self.role is None:
             if self.email == current_app.config['ADMIN_EMAIL']:
                 self.role = Role.query.filter_by(index='admin').first()
-            if self.email == current_app.config['SCREENER_EMAIL']:
-                self.role = Role.query.filter_by(index='screener').first()
+            if self.email == current_app.config['PARTNER_EMAIL']:
+                self.role = Role.query.filter_by(index='partner').first()
             if self.email == current_app.config['ADVISOR_EMAIL']:
                 self.role = Role.query.filter_by(index='advisor').first()
             if self.role is None:
@@ -98,7 +98,7 @@ class User(UserMixin, db.Model):
     def is_applicant(self):
         return self.role_id == 1
 
-    def is_screener(self):
+    def is_partner(self):
         return self.role_id == 2
 
     def is_advisor(self):
@@ -206,7 +206,7 @@ class User(UserMixin, db.Model):
                 confirmed=True,
                 role=role,
                 **kwargs)
-            if u.role.permissions == Permission.GENERAL:
+            if u.role.permissions == Permission.APPLICANT:
                 u.application = Application()
             db.session.add(u)
             try:

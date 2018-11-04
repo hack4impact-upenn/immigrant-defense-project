@@ -40,9 +40,9 @@
           ('screening.index', 'Questionaire Responses', 'question'),
         ])%}
         {# TODO: client checklist items #}
-      {% elif current_user.is_screener() %}
+      {% elif current_user.is_partner() %}
         {% set endpoints = ([
-          ('screener.index', 'Dashboard', 'user'),
+          ('partner.index', 'Dashboard', 'user'),
           ('screening.index', 'Questionaire Responses', 'question'),
         ])%}
       {% elif current_user.is_applicant() %}

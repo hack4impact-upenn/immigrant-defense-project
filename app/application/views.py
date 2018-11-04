@@ -13,7 +13,7 @@ application = Blueprint('application', __name__)
 def index():
     if current_user.is_applicant():
         return redirect(url_for('application.view'), current_user.id)
-    elif current_user.is_screener():
+    elif current_user.is_partner():
         return redirect(404)
     elif current_user.is_admin():
         applicants = User.query.filter(User.application != None).all()

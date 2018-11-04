@@ -79,7 +79,7 @@ def setup_prod():
 
 def setup_general():
     """Runs the set-up needed for both local development and production.
-       Also sets up first admin, screener, applicant (user) and advisor user."""
+       Also sets up first admin, partner, applicant (user) and advisor user."""
     Role.insert_roles()
     admin_query = Role.query.filter_by(name='Administrator')
     if admin_query.first() is not None:
@@ -93,18 +93,18 @@ def setup_general():
             db.session.add(user)
             db.session.commit()
             print('Added administrator {}'.format(user.full_name()))
-    screener_query = Role.query.filter_by(name='Screener')
-    if screener_query.first() is not None:
-        if User.query.filter_by(email=Config.SCREENER_EMAIL).first() is None:
+    partner_query = Role.query.filter_by(name='Partner')
+    if partner_query.first() is not None:
+        if User.query.filter_by(email=Config.PARTNER_EMAIL).first() is None:
             user = User(
-                first_name='Screener',
+                first_name='Partner',
                 last_name='Account',
-                password=Config.SCREENER_PASSWORD,
+                password=Config.PARTNER_PASSWORD,
                 confirmed=True,
-                email=Config.SCREENER_EMAIL)
+                email=Config.PARTNER_EMAIL)
             db.session.add(user)
             db.session.commit()
-            print('Added screener {}'.format(user.full_name()))
+            print('Added partner {}'.format(user.full_name()))
     advisor_query = Role.query.filter_by(name='Advisor')
     if advisor_query.first() is not None:
         if User.query.filter_by(email=Config.ADVISOR_EMAIL).first() is None:
@@ -116,7 +116,7 @@ def setup_general():
                 email=Config.ADVISOR_EMAIL)
             db.session.add(user)
             db.session.commit()
-            print('Added screener {}'.format(user.full_name()))
+            print('Added partner {}'.format(user.full_name()))
     user_query = Role.query.filter_by(name='User')
     if user_query.first() is not None:
         if User.query.filter_by(email=Config.USER_EMAIL).first() is None:

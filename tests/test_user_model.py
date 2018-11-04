@@ -109,7 +109,7 @@ class UserModelTestCase(unittest.TestCase):
     def test_roles_and_permissions(self):
         Role.insert_roles()
         u = User(email='user@example.com', password='password')
-        self.assertTrue(u.can(Permission.GENERAL))
+        self.assertTrue(u.can(Permission.APPLICANT))
         self.assertFalse(u.can(Permission.ADMIN))
 
     def test_make_administrator(self):
@@ -125,9 +125,9 @@ class UserModelTestCase(unittest.TestCase):
         r = Role.query.filter_by(permissions=Permission.ADMIN).first()
         u = User(email='user@example.com', password='password', role=r)
         self.assertTrue(u.can(Permission.ADMIN))
-        self.assertTrue(u.can(Permission.GENERAL))
+        self.assertTrue(u.can(Permission.APPLICANT))
         self.assertTrue(u.is_admin())
 
     def test_anonymous(self):
         u = AnonymousUser()
-        self.assertFalse(u.can(Permission.GENERAL))
+        self.assertFalse(u.can(Permission.APPLICANT))
