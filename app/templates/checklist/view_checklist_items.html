@@ -5,17 +5,17 @@
       <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
-                Default Checklist Items
+                Checklist Items
                 <div class="sub header">
-                    View and manage default checklist items.
+                    View and manage checklist items.
                 </div>
             </h2>
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="right floated content">
-                        <a href="{{ url_for('checklist.add_default_checklist_item') }}" class="ui button">
-                            <i class="plus icon"></i>
-                            New default checklist item
+                        <a href="" class="ui button">
+                            <i class="upload icon"></i>
+                            Upload new document
                         </a>
                     </div>
                     <div class="content">
@@ -40,27 +40,23 @@
                     <tr>
                         <td>{{ c.title }}</td>
                         <td>{{ c.description }}</td>
+                    </tr>
+                {% endfor %}
+                {% for c in user_checklist_items %}
+                    <tr>
+                        <td>{{ c.title }}</td>
+                        <td>{{ c.description }}</td>
                         <td>
                           <div class="ui buttons">
-                            <a href="{{ url_for('checklist.edit_default_checklist_item', id=c.id) }}" class="ui small compact icon button">
-                              <i class="edit icon"></i>
+                            <a href="" class="ui small compact icon button">
+                              <i class="upload icon"></i>
                             </a>
                             <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                            <button class="ui small compact icon button delete-checklist-item" id="{{ c.id }}">
+                            <button class="ui small compact icon button upload-document" id="{{ c.id }}">
                               <i class="trash alternate icon" id="{{ c.id }}"></i>
                             </button>
                           </div>
                         </td>
-                        <!--confirmation modal for deleting a checklist item-->
-                        <div id="modal-{{ c.id }}" class="ui tiny modal delete-checklist-item-modal">
-                           <div class="header">Delete {{ c.title }}</div>
-                           <div class="content">Are you sure you want to delete {{ c.title }}?</div>
-                           <div class="actions">
-                             <div class="ui cancel button">Cancel</div>
-                             <a href="{{ url_for('checklist.delete_default_checklist_item', id=c.id) }}"
-                               class="negative ui button">Yes, delete this item</a>
-                           </div>
-                        </div>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -82,12 +78,6 @@
                     $('td.positive').removeClass('positive');
                     $('tr.hidden').removeClass('hidden').show();
                 }
-            });
-
-            // displaying modal for deleting an item when the delete button is clicked
-            $('.delete-checklist-item').on('click', function(e) {
-                id = e.target.id; // gets the id and shows the appropriate modal
-                $('#modal-' + id).modal('show');
             });
         });
     </script>

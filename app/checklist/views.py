@@ -13,7 +13,7 @@ from app import db
 from app.checklist.forms import (
     DefaultChecklistItemForm,
 )
-from app.models import DefaultChecklistItem
+from app.models import DefaultChecklistItem, UserChecklistItem
 from app.decorators import admin_required
 
 checklist = Blueprint('checklist', __name__)
@@ -88,3 +88,16 @@ def delete_default_checklist_item(id):
         flash('Error occurred. Please try again.', 'form-error')
         return redirect(url_for('checklist.index'))
     return redirect(url_for('checklist.index'))
+
+
+@checklist.route('/<int:id>/view', methods=['GET'])
+def view_all_checklist_items(id):
+    """View all checklist items, specific to each user"""
+    default_checklist_items = DefaultChecklistItem.query.all()
+    user_checklist_items = UserChecklistItem.query.filter_by(application_id=id)
+    return render_template(
+        'checklist/view_checklist_items.html',
+        default_checklist_items=default_checklist_items,
+        user_checklist_items=user_checklist_items)
+
+
