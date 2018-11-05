@@ -4,65 +4,64 @@
     <div class="ui stackable grid container">
       <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
-             <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
                 <i class="caret left icon"></i>
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                Default Checklist Items
+                Survey Questions
                 <div class="sub header">
-                    View and manage default checklist items.
+                    View and manage survey questions.
                 </div>
             </h2>
+
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="right floated content">
-                        <a href="{{ url_for('checklist.add_default_checklist_item') }}" class="ui button">
+                        <a href="{{ url_for('survey.new_question') }}" class="ui button">
                             <i class="plus icon"></i>
-                            New default checklist item
+                            New Survey Question
                         </a>
                     </div>
                     <div class="content">
                         <div class="ui left icon fluid input">
                             <i class="search icon"></i>
-                            <input id="search-checklist-items" type="text" placeholder="Search checklist item by name">
+                            <input id="search-survey-questions" type="text" placeholder="Search survey question by name">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table class="ui searchable sortable unstackable selectable celled table" style="overflow-x: scroll;">
+            <table class="ui searchable sortable unstackable celled table" style="overflow-x: scroll;">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Description</th>
+                        <th>Question</th>
                         <th class="one wide"></th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for c in default_checklist_items %}
+                {% for question in survey_questions %}
                     <tr>
-                        <td>{{ c.title }}</td>
-                        <td>{{ c.description }}</td>
+                        <td>{{ question.content }}</td>
                         <td>
                           <div class="ui buttons">
-                            <a href="{{ url_for('checklist.edit_default_checklist_item', id=c.id) }}" class="ui small compact icon button">
+                            <a href="{{ url_for('survey.edit_question', id=question.id) }}" class="ui small compact icon button">
                               <i class="edit icon"></i>
                             </a>
                             <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                            <button class="ui small compact icon button delete-checklist-item" id="{{ c.id }}">
-                              <i class="trash alternate icon" id="{{ c.id }}"></i>
+                            <button class="ui small compact icon button delete-survey-question" id="{{ question.id }}">
+                              <i class="trash alternate icon" id="{{ question.id }}"></i>
                             </button>
                           </div>
                         </td>
-                        <!--confirmation modal for deleting a checklist item-->
-                        <div id="modal-{{ c.id }}" class="ui tiny modal delete-checklist-item-modal">
-                           <div class="header">Delete {{ c.title }}</div>
-                           <div class="content">Are you sure you want to delete {{ c.title }}?</div>
+                        <!--confirmation modal for deleting a survey question-->
+                        <div id="modal-{{ question.id }}" class="ui tiny modal delete-survey-question-modal">
+                           <div class="header">Delete this question</div>
+                           <div class="content">Are you sure you want to delete the following question?<br><br>{{ question.content }}</div>
                            <div class="actions">
                              <div class="ui cancel button">Cancel</div>
-                             <a href="{{ url_for('checklist.delete_default_checklist_item', id=c.id) }}"
-                               class="negative ui button">Yes, delete this item</a>
+                             <a href="{{ url_for('survey.delete_question', id=question.id) }}"
+                               class="negative ui button">Yes, delete this question</a>
                            </div>
                         </div>
                     </tr>
@@ -74,8 +73,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // searching within the checklist items
-            $('#search-checklist-items').keyup(function () {
+            // searching within the survey questions
+            $('#search-survey-questions').keyup(function () {
                 var searchText = $(this).val();
                 if (searchText.length > 0) {
                     $('tbody td:icontains(' + searchText + ')').addClass('positive');
@@ -89,7 +88,7 @@
             });
 
             // displaying modal for deleting an item when the delete button is clicked
-            $('.delete-checklist-item').on('click', function(e) {
+            $('.delete-survey-question').on('click', function(e) {
                 id = e.target.id; // gets the id and shows the appropriate modal
                 $('#modal-' + id).modal('show');
             });

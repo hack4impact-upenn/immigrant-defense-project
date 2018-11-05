@@ -11,7 +11,8 @@ from redis import Redis
 from rq import Connection, Queue, Worker
 
 from app import create_app, db
-from app.models import (DefaultChecklistItem, Reminder, Role, User,
+from app.models import (Application, DefaultChecklistItem, Reminder, Role,
+                        SurveyQuestion, SurveyResponse, User,
                         UserChecklistItem)
 from app.sms import check_reminders
 
@@ -51,7 +52,7 @@ def recreate_db():
 @manager.option(
     '-n',
     '--number-users',
-    default=10,
+    default=4,
     type=int,
     help='Number of each model type to create',
     dest='number_users')
@@ -59,10 +60,10 @@ def add_fake_data(number_users):
     """
     Adds fake data to the database.
     """
+    SurveyQuestion.generate_fake()
+    DefaultChecklistItem.generate_fake()
     User.generate_fake(count=number_users)
     Reminder.generate_fake()
-    DefaultChecklistItem.generate_fake()
-    UserChecklistItem.generate_fake()
 
 
 @manager.command

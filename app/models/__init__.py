@@ -7,5 +7,5 @@ from .checklist import *  # noqa
 from .document import *
 from .miscellaneous import *  # noqa
 from .reminder import *  # noqa
-from .screening import *
+from .survey import *
 from .user import *  # noqa
