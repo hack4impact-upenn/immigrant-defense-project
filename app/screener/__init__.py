@@ -1,1 +1,1 @@
-from app.screener.views import screener # noqa
+from app.screener.views import screener  # noqa

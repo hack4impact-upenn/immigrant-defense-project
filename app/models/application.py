@@ -5,13 +5,20 @@ from .. import db
 from faker import Faker
 
 
+class Stage:
+    UNMATCHED_PARTNER = 'unmatched_partner'
+    MATCHED_PARTNER = 'matched_partner'
+    COMPLETED_CHECKLIST = 'completed_checklist'
+    IDP_ACCEPTED = 'idp_accepted'
+    IDP_REJECTED = 'idp_rejected'
+    MATCHED_ADVISOR = 'matched_legal_advisor'
+
 class Application(db.Model):
     __tablename__ = 'application'
 
     id = db.Column(db.Integer, primary_key=True)
     user = db.relationship('User', back_populates='application')
-    # PERSONAL INFO
-    phone_number = db.Column(db.String(15), index=True)
+    stage = db.Column(db.String, default=Stage.UNMATCHED_PARTNER, nullable=False)
     legal_advisor = db.relationship('User')
     user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
     screening_answer = db.relationship('ScreeningAnswer', backref='application', lazy=True)

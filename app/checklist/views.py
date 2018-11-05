@@ -1,24 +1,29 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.checklist.forms import DefaultChecklistItemForm
 from app.decorators import admin_required
-from app.models import DefaultChecklistItem
+from app.models import DefaultChecklistItem, UserChecklistItem
+from app.checklist.forms import DefaultChecklistItemForm
 
 checklist = Blueprint('checklist', __name__)
 
 
 @checklist.route('/')
+@login_required
 @admin_required
 def index():
     """Default checklist page."""
     default_checklist_items = DefaultChecklistItem.query.all()
-    return render_template('checklist/index.html', default_checklist_items=default_checklist_items)
+    return render_template(
+        'checklist/index.html',
+        default_checklist_items=default_checklist_items)
 
 
 @checklist.route('/add', methods=['GET', 'POST'])
+@login_required
 @admin_required
 def add_default_checklist_item():
     """Add a new default checklist item."""
@@ -26,17 +31,20 @@ def add_default_checklist_item():
     type = "Add New"
     if form.validate_on_submit():
         default_checklist_item = DefaultChecklistItem(
-            title=form.title.data,
-            description=form.description.data)
+            title=form.title.data, description=form.description.data)
         db.session.add(default_checklist_item)
         db.session.commit()
-        flash('Default checklist item {} successfully created'.format(default_checklist_item.title),
-              'form-success')
-        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
-    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+        flash(
+            'Default checklist item {} successfully created'.format(
+                default_checklist_item.title), 'form-success')
+        return render_template(
+            'checklist/edit_checklist_item.html', form=form, type=type)
+    return render_template(
+        'checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>', methods=['GET', 'POST'])
+@login_required
 @admin_required
 def edit_default_checklist_item(id):
     """Edit a default checklist item's title and description."""
@@ -51,18 +59,22 @@ def edit_default_checklist_item(id):
         default_checklist_item.description = form.description.data
         try:
             db.session.commit()
-            flash('Default checklist item {} successfully changed.'.format(old_title),
-                'form-success')
+            flash(
+                'Default checklist item {} successfully changed.'.format(
+                    old_title), 'form-success')
         except IntegrityError:
             db.session.rollback()
             flash('Error Occurred. Please try again.', 'form-error')
-        return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+        return render_template(
+            'checklist/edit_checklist_item.html', form=form, type=type)
     form.title.data = default_checklist_item.title
     form.description.data = default_checklist_item.description
-    return render_template('checklist/edit_checklist_item.html', form=form, type=type)
+    return render_template(
+        'checklist/edit_checklist_item.html', form=form, type=type)
 
 
 @checklist.route('/<int:id>/delete')
+@login_required
 @admin_required
 def delete_default_checklist_item(id):
     """Deletes the default checklist item"""
@@ -72,10 +84,24 @@ def delete_default_checklist_item(id):
     db.session.delete(default_checklist_item)
     try:
         db.session.commit()
-        flash('Successfully deleted default checklist item %s.' % default_checklist_item.title,
-                'success')
+        flash(
+            'Successfully deleted default checklist item %s.' %
+            default_checklist_item.title, 'success')
     except IntegrityError:
         db.session.rollback()
         flash('Error occurred. Please try again.', 'form-error')
         return redirect(url_for('checklist.index'))
     return redirect(url_for('checklist.index'))
+
+
+@checklist.route('/<int:user_id>/view', methods=['GET'])
+def view_all_checklist_items(user_id):
+    """View all checklist items, specific to each user"""
+    """Finding user, then accessing application"""
+    user = User.query.get(user_id)
+    if user is None or user.application is None:
+        abort(404)
+    user_checklist_items = UserChecklistItem.query.filter_by(application_id=user.application.id)
+    return render_template(
+        'checklist/view_checklist_items.html',
+        user_checklist_items=user_checklist_items)

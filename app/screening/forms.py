@@ -7,6 +7,5 @@ from app.models import ScreeningQuestion
 
 
 class ScreeningQuestionForm(Form):
-    question = StringField(
-        validators = [InputRequired(), Length(1, 256)])
+    question = StringField(validators=[InputRequired(), Length(1, 256)])
     submit = SubmitField()
