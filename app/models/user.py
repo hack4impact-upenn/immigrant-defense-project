@@ -5,7 +5,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from .application import Application
+from . import Application, ScreeningQuestion, ScreeningAnswer
 
 
 class Permission:
@@ -193,6 +193,7 @@ class User(UserMixin, db.Model):
         fake = Faker()
         Role.insert_roles()
         roles = Role.query.all()
+        questions = ScreeningQuestion.query.all()
 
         seed()
         for i in range(count):
@@ -208,6 +209,16 @@ class User(UserMixin, db.Model):
                 **kwargs)
             if u.role.permissions == Permission.GENERAL:
                 u.application = Application()
+                for question in questions:
+                    new_answer = ScreeningAnswer(
+                            application_id=u.application.id,
+                            question_id=question.id,
+                            answer=fake.sentence)
+                    db.session.add(new_answer)
+                    try:
+                        db.session.commit()
+                    except IntegrityError:
+                        db.session.rollback()
             db.session.add(u)
             try:
                 db.session.commit()

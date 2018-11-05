@@ -2,6 +2,8 @@ from sqlalchemy.orm import validates
 
 from .. import db
 
+from faker import Faker
+
 
 class Stage:
     UNMATCHED_PARTNER = 'unmatched_partner'
@@ -19,3 +21,7 @@ class Application(db.Model):
     stage = db.Column(db.String, default=Stage.UNMATCHED_PARTNER, nullable=False)
     legal_advisor = db.relationship('User')
     user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
+    screening_answer = db.relationship('ScreeningAnswer', backref='application', lazy=True)
+
+    def get_id(self):
+        return self.id

@@ -60,11 +60,9 @@ def edit_screening_question(id):
         except IntegrityError:
             db.session.rollback()
             flash('Error Occurred. Please try again.', 'form-error')
-        return render_template(
-            'screening/add_screening_question.html', form=form, type=type)
-    screening_question.question = form.question.data
-    return render_template(
-        'screening/add_screening_question.html', form=form, type=type)
+        return render_template('screening/add_screening_question.html', form=form, type=type)
+    form.question.data = screening_question.question
+    return render_template('screening/add_screening_question.html', form=form, type=type)
 
 
 @screening.route('/<int:id>/delete')
