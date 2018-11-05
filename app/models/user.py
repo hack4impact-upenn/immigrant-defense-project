@@ -5,8 +5,9 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .. import db, login_manager
 from . import Application, SurveyQuestion, SurveyResponse
+from .. import db, login_manager
+
 
 def db_add_commit(item):
     db.session.add(item)

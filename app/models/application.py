@@ -1,8 +1,7 @@
+from faker import Faker
 from sqlalchemy.orm import validates
 
 from .. import db
-
-from faker import Faker
 
 
 class Stage:

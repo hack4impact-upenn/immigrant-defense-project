@@ -1,5 +1,5 @@
-from .. import db
 from . import Application
+from .. import db
 
 
 class DefaultChecklistItem(db.Model):
