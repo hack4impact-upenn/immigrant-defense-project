@@ -23,31 +23,5 @@ class Application(db.Model):
     user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
     screening_answer = db.relationship('ScreeningAnswer', backref='application', lazy=True)
 
-    @staticmethod
-    def generate_fake(count=10, **kwargs):
-        fake = Faker()
-        for i in range(count):
-            application = Application(
-                phone_number=fake.phone_number(),
-            )
-            db.session.add(application)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
-
-    @staticmethod
-    def generate_one_fake():
-        fake = Faker()
-        application = Application(
-            phone_number=fake.phone_number(),
-        )
-        db.session.add(application)
-        try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-        return application
-
     def get_id(self):
         return self.id

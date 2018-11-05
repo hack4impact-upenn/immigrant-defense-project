@@ -208,7 +208,7 @@ class User(UserMixin, db.Model):
                 role=role,
                 **kwargs)
             if u.role.permissions == Permission.GENERAL:
-                u.application = Application.generate_fake()
+                u.application = Application()
                 for question in questions:
                     new_answer = ScreeningAnswer(
                             application_id=u.application.id,
