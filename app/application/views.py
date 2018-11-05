@@ -8,6 +8,7 @@ from app.models import Application, User
 
 application = Blueprint('application', __name__)
 
+
 @login_required
 @application.route('/')
 def index():

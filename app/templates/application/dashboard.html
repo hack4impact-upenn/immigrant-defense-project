@@ -4,6 +4,10 @@
     <div class="ui stackable grid container">
       <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
             <h2 class="ui header">
                 Applications
                 <div class="sub header">
@@ -31,11 +35,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for a in applicants %}
+                {% for u in user %}
                     <tr>
-                        <td>{{ a.first_name }}</td>
-                        <td>{{ a.last_name }}</td>
-                        <td>{{ a.phone_number }}</td>
+                        <td>{{ u.first_name }}</td>
+                        <td>{{ u.last_name }}</td>
+                        <td>{{ u.phone_number }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

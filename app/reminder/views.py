@@ -2,6 +2,7 @@ import datetime
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+
 from flask_login import login_required
 from sqlalchemy.exc import IntegrityError
 

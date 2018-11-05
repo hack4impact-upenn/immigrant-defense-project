@@ -41,4 +41,5 @@ class UserChecklistItem(db.Model):
     documents = db.relationship('Document', backref='user_checklist_item', lazy=True)
 
     def __repr__(self):
-        return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(self.title, self.description, self.completed, self.document)
+        return '<User Checklist Item: Title = {}, Description = {}, Completed = {}, Document = {}>'.format(
+            self.title, self.description, self.completed, self.document)
