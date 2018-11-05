@@ -2,11 +2,18 @@ from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
 from itsdangerous import BadSignature, SignatureExpired
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from .application import Application
+from . import Application, SurveyQuestion, SurveyResponse
 
+def db_add_commit(item):
+    db.session.add(item)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
 
 class Permission:
     GENERAL = 0x01
@@ -69,22 +76,23 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    phone_number = db.Column(db.String(32), index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
-    application = db.relationship('Application', uselist=False, back_populates='user')
+    application = db.relationship("Application", uselist = False, back_populates="user")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['ADMIN_EMAIL']:
                 self.role = Role.query.filter_by(index='admin').first()
-            if self.email == current_app.config['SCREENER_EMAIL']:
+            elif self.email == current_app.config['SCREENER_EMAIL']:
                 self.role = Role.query.filter_by(index='screener').first()
-            if self.email == current_app.config['ADVISOR_EMAIL']:
+            elif self.email == current_app.config['ADVISOR_EMAIL']:
                 self.role = Role.query.filter_by(index='advisor').first()
-            if self.role is None:
+            else:
                 self.role = Role.query.filter_by(index='main').first()
 
     def full_name(self):
@@ -164,8 +172,7 @@ class User(UserMixin, db.Model):
         if self.query.filter_by(email=new_email).first() is not None:
             return False
         self.email = new_email
-        db.session.add(self)
-        db.session.commit()
+        db_add_commit(self)
         return True
 
     def reset_password(self, token, new_password):
@@ -178,39 +185,46 @@ class User(UserMixin, db.Model):
         if data.get('reset') != self.id:
             return False
         self.password = new_password
-        db.session.add(self)
-        db.session.commit()
+        db_add_commit(self)
         return True
 
     @staticmethod
     def generate_fake(count=100, **kwargs):
         """Generate a number of fake users for testing."""
-        from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
 
         fake = Faker()
         Role.insert_roles()
         roles = Role.query.all()
-        
+        questions = SurveyQuestion.query.all()
+
         seed()
-        for i in range(count):
-            role = choice(roles)
-            u = User(
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                email=fake.email(),
-                password='password',
-                confirmed=True,
-                role=role,
-                **kwargs)
-            if u.role.permissions == Permission.GENERAL:
-                u.application = Application.generate_fake()
-            db.session.add(u)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
+        for role in roles:
+            for i in range(count):
+                user = User(
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    email=fake.email(),
+                    phone_number=fake.phone_number(),
+                    password='password',
+                    confirmed=True,
+                    role=role,
+                    **kwargs)
+                if user.role.permissions == Permission.GENERAL:
+                    # Create application
+                    application = Application()
+                    user.application = application
+                    db_add_commit(application)
+                    # Create responses to survey questions
+                    for question in questions:
+                        response = SurveyResponse(
+                            content=fake.sentence(),
+                            application_id=application.id,
+                            question_id=question.id,
+                        )
+                        db.session.add(response)
+                db_add_commit(user)
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()

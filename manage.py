@@ -12,7 +12,7 @@ from rq import Connection, Queue, Worker
 
 from app import create_app, db
 from app.models import (DefaultChecklistItem, Reminder, Role, User,
-                        UserChecklistItem)
+                        UserChecklistItem, SurveyQuestion, SurveyResponse, Application)
 from app.sms import check_reminders
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -51,7 +51,7 @@ def recreate_db():
 @manager.option(
     '-n',
     '--number-users',
-    default=10,
+    default=4,
     type=int,
     help='Number of each model type to create',
     dest='number_users')
@@ -59,10 +59,10 @@ def add_fake_data(number_users):
     """
     Adds fake data to the database.
     """
+    SurveyQuestion.generate_fake()
+    DefaultChecklistItem.generate_fake()
     User.generate_fake(count=number_users)
     Reminder.generate_fake()
-    DefaultChecklistItem.generate_fake()
-    UserChecklistItem.generate_fake()
 
 
 @manager.command
@@ -129,6 +129,7 @@ def setup_general():
             db.session.add(user)
             db.session.commit()
             print('Added applicant {}'.format(user.full_name()))
+
 
 @manager.command
 def run_worker():

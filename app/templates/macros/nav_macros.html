@@ -20,15 +20,45 @@
 #}
 
 {% macro header_items(current_user) %}
-    {% set endpoints = [
-      ('main.index', config.APP_NAME, 'home'),
-      ('main.about', 'About', 'info')
-    ]%}
-    {% set user = [] %}
+    {% set endpoints = [] %}
     {% if current_user.is_authenticated %}
-      {% set user = ([(current_user.role.index + '.index', current_user.role.name + ' Dashboard', 'user')]) %}
+      {% if current_user.is_admin() %}
+        {% set endpoints = ([
+          ('admin.index', 'Dashboard', 'user'),
+          ('application.index', 'Applications', 'file outline'),
+          ('checklist.index', 'Checklist', 'list ui'),
+          ('survey.index', 'Survey Questions', 'question'),
+          ('survey.index', 'Survey Responses', 'question'),
+          ('reminder.dashboard', 'Reminders', 'bell')
+          ])%}
+        {# TODO: view questionaire responses #}
+      {% elif current_user.is_advisor() %}
+        {% set endpoints = ([
+          ('admin.index', 'Dashboard', 'user'),
+          ('checklist.index', 'Checklist', 'list ui'),
+          ('reminder.dashboard', 'Reminders', 'bell'),
+          ('survey.index', 'Survey Responses', 'question'),
+        ])%}
+        {# TODO: client checklist items #}
+      {% elif current_user.is_screener() %}
+        {% set endpoints = ([
+          ('screener.index', 'Dashboard', 'user'),
+          ('survey.index', 'Survey Responses', 'question'),
+        ])%}
+      {% elif current_user.is_applicant() %}
+        {% set endpoints = ([
+          ('application.index', 'Application', 'file outline'),
+          ('survey.index', 'Survey', 'question'),
+          ('checklist.index', 'Checklist', 'list ui'),
+        ])%}
+      {% endif %}
+    {% else %}
+      {% set endpoints = [
+        ('main.index', config.APP_NAME, 'home'),
+        ('main.about', 'About', 'info')
+      ]%}
     {% endif %}
-    {{ render_menu_items( endpoints +  user ) }}
+    {{ render_menu_items( endpoints) }}
 {% endmacro %}
 
 {# This renders the right hand side of the navigation bar. If the user is logged in, it links to
