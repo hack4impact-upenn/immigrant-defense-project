@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from . import Application, SurveyQuestion, SurveyResponse
+from . import Application, DefaultChecklistItem, SurveyQuestion, SurveyResponse, UserChecklistItem
 
 def db_add_commit(item):
     db.session.add(item)
@@ -198,6 +198,7 @@ class User(UserMixin, db.Model):
         Role.insert_roles()
         roles = Role.query.all()
         questions = SurveyQuestion.query.all()
+        default_checklist_items = DefaultChecklistItem.query.all()
 
         seed()
         for role in roles:
@@ -218,12 +219,19 @@ class User(UserMixin, db.Model):
                     db_add_commit(application)
                     # Create responses to survey questions
                     for question in questions:
-                        response = SurveyResponse(
+                        db.session.add(SurveyResponse(
                             content=fake.sentence(),
                             application_id=application.id,
                             question_id=question.id,
-                        )
-                        db.session.add(response)
+                        ))
+                    # Create user checklist items
+                    for default_checklist_item in default_checklist_items:
+                        db.session.add(UserChecklistItem(
+                            title=default_checklist_item.title,
+                            description=default_checklist_item.description,
+                            completed=False,
+                            application_id=application.id,
+                        ))
                 db_add_commit(user)
 
     def __repr__(self):
