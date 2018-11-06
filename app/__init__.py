@@ -84,8 +84,8 @@ def create_app(config_name):
     from .screener import screener as screener_blueprint
     app.register_blueprint(screener_blueprint, url_prefix='/screener')
 
-    from .screening import screening as screening_blueprint
-    app.register_blueprint(screening_blueprint, url_prefix='/screening')
+    from .survey import survey as survey_blueprint
+    app.register_blueprint(survey_blueprint, url_prefix='/survey')
 
     from .reminder import reminder as reminder_blueprint
     app.register_blueprint(reminder_blueprint, url_prefix='/reminder')

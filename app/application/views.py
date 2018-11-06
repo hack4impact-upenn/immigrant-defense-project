@@ -8,6 +8,7 @@ from app.models import Application, User
 
 application = Blueprint('application', __name__)
 
+
 @login_required
 @application.route('/')
 def index():
@@ -28,7 +29,7 @@ def index():
 def view(user_id):
     if current_user.is_applicant() and current_user.id != user_id:
         return redirect(404)
-    application = Application.query.filter_by(user=current_user).first()
-    if not application:
+    user = User.query.get(user_id)
+    if not user.application:
         return redirect(404)
-    return render_template('application/profile.html', application=application)
+    return render_template('application/profile.html', application=user.application)

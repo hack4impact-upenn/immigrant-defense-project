@@ -2,19 +2,16 @@ import datetime
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
+
 from flask_login import login_required
+from sqlalchemy.exc import IntegrityError
 
 from app.decorators import *
 
 from .. import db
 from ..models import Reminder
-
-from sqlalchemy.exc import IntegrityError
-
-from .forms import SendNewReminderForm, ScheduleNewReminderForm
-from .. import db
-from ..models import Reminder
 from ..sms import send
+from .forms import ScheduleNewReminderForm, SendNewReminderForm
 
 reminder = Blueprint('reminder', __name__)
 

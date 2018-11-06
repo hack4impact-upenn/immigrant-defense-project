@@ -5,24 +5,23 @@
       <div class="ui hidden divider"></div>
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
-                Screening Questions
+                Checklist Items
                 <div class="sub header">
-                    View and manage screening questions.
+                    View and manage checklist items.
                 </div>
             </h2>
-
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="right floated content">
-                        <a href="{{ url_for('screening.add_screening_question') }}" class="ui button">
-                            <i class="plus icon"></i>
-                            New Screening Question
+                        <a href="" class="ui button">
+                            <i class="upload icon"></i>
+                            Upload new document
                         </a>
                     </div>
                     <div class="content">
                         <div class="ui left icon fluid input">
                             <i class="search icon"></i>
-                            <input id="search-screening-questions" type="text" placeholder="Search screening question by name">
+                            <input id="search-checklist-items" type="text" placeholder="Search checklist item by name">
                         </div>
                     </div>
                 </div>
@@ -31,35 +30,27 @@
             <table class="ui searchable sortable unstackable selectable celled table" style="overflow-x: scroll;">
                 <thead>
                     <tr>
-                        <th>Question</th>
+                        <th>Title</th>
+                        <th>Description</th>
                         <th class="one wide"></th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for c in screening_questions %}
+                {% for c in user_checklist_items %}
                     <tr>
-                        <td>{{ c.question }}</td>
+                        <td>{{ c.title }}</td>
+                        <td>{{ c.description }}</td>
                         <td>
                           <div class="ui buttons">
-                            <a href="{{ url_for('screening.edit_screening_question', id=c.id) }}" class="ui small compact icon button">
-                              <i class="edit icon"></i>
+                            <a href="" class="ui small compact icon button">
+                              <i class="upload icon"></i>
                             </a>
                             <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                            <button class="ui small compact icon button delete-screening-question" id="{{ c.id }}">
+                            <button class="ui small compact icon button upload-document" id="{{ c.id }}">
                               <i class="trash alternate icon" id="{{ c.id }}"></i>
                             </button>
                           </div>
                         </td>
-                        <!--confirmation modal for deleting a screening question-->
-                        <div id="modal-{{ c.id }}" class="ui tiny modal delete-screening-question-modal">
-                           <div class="header">Delete this question</div>
-                           <div class="content">Are you sure you want to delete the following question?<br><br>{{ c.question }}</div>
-                           <div class="actions">
-                             <div class="ui cancel button">Cancel</div>
-                             <a href="{{ url_for('screening.delete_screening_question', id=c.id) }}"
-                               class="negative ui button">Yes, delete this question</a>
-                           </div>
-                        </div>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -69,8 +60,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // searching within the screening questions
-            $('#search-screening-questions').keyup(function () {
+            // searching within the checklist items
+            $('#search-checklist-items').keyup(function () {
                 var searchText = $(this).val();
                 if (searchText.length > 0) {
                     $('tbody td:icontains(' + searchText + ')').addClass('positive');
@@ -81,12 +72,6 @@
                     $('td.positive').removeClass('positive');
                     $('tr.hidden').removeClass('hidden').show();
                 }
-            });
-
-            // displaying modal for deleting an item when the delete button is clicked
-            $('.delete-screening-question').on('click', function(e) {
-                id = e.target.id; // gets the id and shows the appropriate modal
-                $('#modal-' + id).modal('show');
             });
         });
     </script>

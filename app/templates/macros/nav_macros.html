@@ -27,8 +27,8 @@
           ('admin.index', 'Dashboard', 'user'),
           ('application.index', 'Applications', 'file outline'),
           ('checklist.index', 'Checklist', 'list ui'),
-          ('screening.index', 'Screening Questions', 'question'),
-          ('screening.index', 'Questionaire Responses', 'question'),
+          ('survey.index', 'Survey Questions', 'question'),
+          ('survey.index', 'Survey Responses', 'question'),
           ('reminder.dashboard', 'Reminders', 'bell')
           ])%}
         {# TODO: view questionaire responses #}
@@ -37,18 +37,18 @@
           ('admin.index', 'Dashboard', 'user'),
           ('checklist.index', 'Checklist', 'list ui'),
           ('reminder.dashboard', 'Reminders', 'bell'),
-          ('screening.index', 'Questionaire Responses', 'question'),
+          ('survey.index', 'Survey Responses', 'question'),
         ])%}
         {# TODO: client checklist items #}
       {% elif current_user.is_screener() %}
         {% set endpoints = ([
           ('screener.index', 'Dashboard', 'user'),
-          ('screening.index', 'Questionaire Responses', 'question'),
+          ('survey.index', 'Survey Responses', 'question'),
         ])%}
       {% elif current_user.is_applicant() %}
         {% set endpoints = ([
           ('application.index', 'Application', 'file outline'),
-          ('screening.index', 'Questionaire', 'question'),
+          ('survey.index', 'Survey', 'question'),
           ('checklist.index', 'Checklist', 'list ui'),
         ])%}
       {% endif %}
