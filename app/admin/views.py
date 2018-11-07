@@ -9,7 +9,7 @@ from app.admin.forms import (ChangeAccountTypeForm, ChangeUserEmailForm,
 from app.decorators import admin_required
 from app.email import send_email
 from app.models import (Application, DefaultChecklistItem, EditableHTML,
-                        Reminder, Role, ScreeningQuestion, User)
+                        Reminder, Role, User)
 
 admin = Blueprint('admin', __name__)
 
