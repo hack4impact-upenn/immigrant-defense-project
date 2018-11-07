@@ -8,6 +8,8 @@ from app.models import Role, User
 
 
 class AssignAdvisorForm(Form):
+    choices = User.query.filter(User.is_screener()).all()
+
     advisor = SelectField('Advisor Name', choices=[])
     applicant_ids = HiddenField('Applicant Ids')
     submit = SubmitField('Assign Advisor')
