@@ -5,6 +5,7 @@ from flask_rq import get_queue
 
 from app import db
 from app.models import Application, User
+from app.application.forms import AssignAdvisorForm
 
 application = Blueprint('application', __name__)
 
@@ -21,7 +22,17 @@ def index():
     elif current_user.is_advisor():
         applicants = []
         # applications = Application.query.filter_by(legal_advisor=current_user.id).all()
-    return render_template('application/dashboard.html', applicants=applicants)
+
+    advisor_form = AssignAdvisorForm()
+    if advisor_form.validate_on_submit():
+        for applicant_id in advisor_form.applicant_ids.data.split(','):
+            print("")
+
+
+    return render_template(
+        'application/dashboard.html', 
+        applicants=applicants,
+        advisor_form=advisor_form)
 
 
 @login_required

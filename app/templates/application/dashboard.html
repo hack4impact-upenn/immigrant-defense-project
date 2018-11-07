@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
 
 {% block content %}
     <div class="ui stackable grid container">
@@ -14,7 +15,19 @@
                     View and manage applications.
                 </div>
             </h2>
+            <h3 class="ui header">
+                Assign Advisor to Selected Applicants
+            </h3>
+            {% set flashes = {
+               'error':   get_flashed_messages(category_filter=['form-error']),
+               'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
 
+            {{ f.begin_form(advisor_form, flashes) }}
+            {{ f.render_form_field(advisor_form.advisor) }}
+            {{ f.render_form_field(advisor_form.submit) }}
+            {{ advisor_form.applicant_ids }}
+            {{ f.end_form(advisor_form) }}
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="content">
@@ -35,8 +48,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for u in user %}
-                    <tr>
+                {% for u in applicants %}
+                    <tr class="applicant-row" data-profile-id={{ u.id }}>
                         <td>{{ u.first_name }}</td>
                         <td>{{ u.last_name }}</td>
                         <td>{{ u.phone_number }}</td>
@@ -61,6 +74,21 @@
                     $('td.positive').removeClass('positive');
                     $('tr.hidden').removeClass('hidden').show();
                 }
+            });
+
+            var selectedProfileIds = new Set();
+
+            // Allows admin to select applications
+            $('.applicant-row').click(function (e) {
+                applicantProfileId = this.getAttribute('data-profile-id');
+                if (selectedProfileIds.has(applicantProfileId)) {
+                    selectedProfileIds.delete(applicantProfileId);
+                    $(this).removeClass('active');
+                } else {
+                    selectedProfileIds.add(applicantProfileId);
+                    $(this).addClass('active');
+                }
+                $('#applicant_ids').val(Array.from(selectedProfileIds));
             });
         });
     </script>
