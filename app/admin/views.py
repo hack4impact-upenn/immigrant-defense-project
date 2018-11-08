@@ -9,7 +9,7 @@ from app.admin.forms import (ChangeAccountTypeForm, ChangeUserEmailForm,
 from app.decorators import admin_required
 from app.email import send_email
 from app.models import (Application, DefaultChecklistItem, EditableHTML,
-                        Reminder, Role, User)
+                        Reminder, Role, SurveyQuestion, User)
 
 admin = Blueprint('admin', __name__)
 
@@ -213,13 +213,13 @@ def manage_default_checklist():
         default_checklist_items=default_checklist_items)
 
 
-@admin.route('/manage_screening_questions', methods=['GET'])
+@admin.route('/manage_survey_questions', methods=['GET'])
 @login_required
 @admin_required
-def manage_screening_questions():
-    screening_questions = ScreeningQuestion.query.all()
+def manage_survey_questions():
+    survey_questions = SurveyQuestion.query.all()
     return render_template(
-        'screening/index.html', screening_questions=screening_questions)
+        'survey/manage_questions.html', survey_questions=survey_questions)
 
 
 @admin.route('/manage_reminders', methods=['GET'])

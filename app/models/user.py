@@ -69,8 +69,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    application_id = db.Column(db.Integer, db.ForeignKey('application.id'))
-    application = db.relationship("Application", uselist = False, back_populates="user")
+    application_id = db.Column(db.Integer, db.ForeignKey('application.id', use_alter=True))
+    application = db.relationship("Application", foreign_keys=[application_id], uselist=False, backref='user')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
