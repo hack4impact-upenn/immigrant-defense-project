@@ -49,7 +49,7 @@
                 </thead>
                 <tbody>
                 {% for u in applicants %}
-                    <tr class="applicant-row" data-profile-id={{ u.id }}>
+                    <tr class="applicant-row" application-profile-id={{ u.id }}>
                         <td>{{ u.first_name }}</td>
                         <td>{{ u.last_name }}</td>
                         <td>{{ u.phone_number }}</td>
@@ -80,7 +80,7 @@
 
             // Allows admin to select applications
             $('.applicant-row').click(function (e) {
-                applicantProfileId = this.getAttribute('data-profile-id');
+                applicantProfileId = this.getAttribute('application-profile-id');
                 if (selectedProfileIds.has(applicantProfileId)) {
                     selectedProfileIds.delete(applicantProfileId);
                     $(this).removeClass('active');

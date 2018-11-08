@@ -11,7 +11,7 @@ application = Blueprint('application', __name__)
 
 
 @login_required
-@application.route('/')
+@application.route('/', methods=['GET', 'POST'])
 def index():
     if current_user.is_applicant():
         return redirect(url_for('application.view'), current_user.id)
@@ -25,9 +25,14 @@ def index():
 
     advisor_form = AssignAdvisorForm()
     if advisor_form.validate_on_submit():
-        for applicant_id in advisor_form.applicant_ids.data.split(','):
-            print("")
-
+        for app_id in advisor_form.applicant_ids.data.split(','):
+            user = User.query.filter_by(id=app_id).first()
+            data = Application.query.filter_by(id=user.application_id).first()
+            data.legal_advisor = [advisor_form.advisor.data]
+            db.session.add(data)
+        db.session.commit()
+        flash('Successfully assigned advisors!', 'form-success')
+        return redirect(url_for('application.index'))
 
     return render_template(
         'application/dashboard.html', 
