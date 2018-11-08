@@ -16,9 +16,11 @@ class Application(db.Model):
     __tablename__ = 'application'
 
     id = db.Column(db.Integer, primary_key=True)
-    user = db.relationship('User', back_populates='application')
     stage = db.Column(db.String, default=Stage.UNMATCHED_PARTNER, nullable=False)
-    legal_advisor = db.relationship('User')
+
+    legal_advisor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    legal_advisor = db.relationship('User', foreign_keys=[legal_advisor_id], backref='client_applications')
+
     user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
     survey_responses = db.relationship('SurveyResponse', backref='application', lazy=True)
 
