@@ -5,12 +5,12 @@ from .. import db
 
 
 class Stage:
-    UNMATCHED_PARTNER = 'unmatched_partner'
-    MATCHED_PARTNER = 'matched_partner'
-    COMPLETED_CHECKLIST = 'completed_checklist'
-    IDP_ACCEPTED = 'idp_accepted'
-    IDP_REJECTED = 'idp_rejected'
-    MATCHED_ADVISOR = 'matched_legal_advisor'
+    UNMATCHED_PARTNER = 'Partner unmatched'
+    MATCHED_PARTNER = 'Partner matched'
+    COMPLETED_CHECKLIST = 'Checklist completed'
+    IDP_ACCEPTED = 'Accepted IDP'
+    IDP_REJECTED = 'Rejected IDP'
+    MATCHED_ADVISOR = 'Legal advisor matched'
 
 class Application(db.Model):
     __tablename__ = 'application'
