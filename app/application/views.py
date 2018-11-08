@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from flask_rq import get_queue
 
 from app import db
-from app.models import Application, User
+from app.models import Application, User, Stage
 from app.application.forms import AssignAdvisorForm
 
 application = Blueprint('application', __name__)
@@ -29,6 +29,7 @@ def index():
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
             data.legal_advisor = advisor_form.advisor.data
+            data.stage = Stage.MATCHED_ADVISOR
             db.session.add(data)
         db.session.commit()
         flash('Successfully assigned advisors!', 'form-success')
