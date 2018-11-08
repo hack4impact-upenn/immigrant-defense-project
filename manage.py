@@ -11,8 +11,9 @@ from redis import Redis
 from rq import Connection, Queue, Worker
 
 from app import create_app, db
-from app.models import (DefaultChecklistItem, Reminder, Role, User,
-                        UserChecklistItem, SurveyQuestion, SurveyResponse, Application)
+from app.models import (Application, DefaultChecklistItem, Reminder, Role,
+                        SurveyQuestion, SurveyResponse, User,
+                        UserChecklistItem)
 from app.sms import check_reminders
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')

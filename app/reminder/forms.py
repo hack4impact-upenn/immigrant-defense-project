@@ -5,6 +5,7 @@ from wtforms.fields import SelectField, StringField, SubmitField, TextAreaField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import InputRequired, Length
 
+
 class SendNewReminderForm(Form):
     title = StringField(
         'Reminder title',
