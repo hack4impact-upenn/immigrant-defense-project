@@ -28,7 +28,7 @@ def index():
         for app_id in advisor_form.applicant_ids.data.split(','):
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
-            data.legal_advisor = [advisor_form.advisor.data]
+            data.legal_advisor = advisor_form.advisor.data
             db.session.add(data)
         db.session.commit()
         flash('Successfully assigned advisors!', 'form-success')
