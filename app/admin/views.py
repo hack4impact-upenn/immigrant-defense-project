@@ -197,7 +197,7 @@ def update_editor_contents():
 @admin_required
 def view_applications():
     """ A table of all the applications """
-    user = User.query.join(Application).filter(User.application_id != None).all()
+    user = User.query.join(Application, User.application_id == Application.id).filter(User.application_id != None).all()
     return render_template(
         'application/dashboard.html', user=user)
 
