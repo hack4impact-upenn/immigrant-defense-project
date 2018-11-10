@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from flask_rq import get_queue
 
 from app import db
-from app.models import Application, User
+from app.models import Application, User, Stage
 
 application = Blueprint('application', __name__)
 
@@ -37,26 +37,18 @@ def view(user_id):
 @login_required
 @application.route('<int:user_id>/change_status_to_complete')
 def change_status_to_complete(user_id):
-    application = Application.query.join(User).filter(User.id == user_id).get(user_id)
+    application = Application.query.join(User, User.application_id == Application.id).filter(User.id == user_id).first()
     if application is None:
         abort(404)
-    old_title = default_checklist_item.title
-    form = DefaultChecklistItemForm()
-    type = "Edit"
-    if form.validate_on_submit():
-        default_checklist_item.title = form.title.data
-        default_checklist_item.description = form.description.data
-        try:
-            db.session.commit()
-            flash(
-                'Default checklist item {} successfully changed.'.format(
-                    old_title), 'form-success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error Occurred. Please try again.', 'form-error')
-        return render_template(
-            'checklist/edit_checklist_item.html', form=form, type=type)
-    form.title.data = default_checklist_item.title
-    form.description.data = default_checklist_item.description
+    try:
+        application.stage = Stage.COMPLETED_CHECKLIST
+        db.session.commit()
+        flash(
+            'Application stage {} successfully changed to completed checklist.'.format(
+                application.user), 'application-stage-update-success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error Occurred. Please try again.', 'application-stage-update-error')
+    user = User.query.join(Application, User.application_id == Application.id).filter(User.application_id != None).all()
     return render_template(
-        'checklist/edit_checklist_item.html', form=form, type=type)
+        'application/dashboard.html', user=user)
