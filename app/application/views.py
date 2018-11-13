@@ -51,4 +51,4 @@ def view(user_id):
     user = User.query.get(user_id)
     if not user.application:
         return redirect(404)
-    return render_template('application/profile.html', application=user.application)
+    return render_template('application/profile.html', user=user)

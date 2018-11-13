@@ -7,7 +7,7 @@
         <div class="ui cards">
             <div class="ui card">
                 <div class="content">
-                    <h3>Katie Jiang</h3>
+                    <h3>{{ user.full_name() }}</h3>
                 </div>
                 <div class="content">
                     <div class="ui sub header">Contact Information</div>
@@ -15,15 +15,17 @@
                         <div class="item">
                             <i class="mail icon"></i>
                             <div class="content">
-                                <a href="mailto:email">katie@gmail.com</a>
+                                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
                             </div>
                         </div>
+                        {% if user.phone_number %}
                         <div class="item">
                             <i class="phone icon"></i>
                             <div class="content">
-                                <a href="tel:phone">123-456-7890</a>
+                                <a href="tel:{{ user.phone_number }}">{{ user.phone_number }}</a>
                             </div>
                         </div>
+                        {% endif %}
                         <div class="item">
                             <i class="map marker alternate icon"></i>
                             <div class="content">
@@ -35,9 +37,11 @@
                 <div class="content">
                     <div class="ui sub header">Bio</div>
                     <p>
+                        <!-- TODO -->
                         Hello, my name is Katie! I'm currently a student at the University of Pennsylvania majoring in the art of zeroes and ones. I like Studio Ghibli movies and frying eggs.</p>
                 </div>
             </div>
+            {% if user.application.legal_advisor != None %}
             <div class="ui card">
                 <div class="content">
                     <h3>Legal Advisor</h3>
@@ -50,24 +54,27 @@
                         <div class="item">
                             <i class="user icon"></i>
                             <div class="content">
-                                Stephanie Shi
+                                {{ user.application.legal_advisor.full_name() }}
                             </div>
                         </div>
                         <div class="item">
                             <i class="mail icon"></i>
                             <div class="content">
-                                <a href="mailto:email">stephanie@idp.com</a>
+                                <a href="mailto:{{ user.application.legal_advisor.email }}">{{ user.application.legal_advisor.email }}</a>
                             </div>
                         </div>
+                        {% if user.application.legal_advisor.phone_number != None %}
                         <div class="item">
                             <i class="phone icon"></i>
                             <div class="content">
-                                <a href="tel:phone">098-765-4321</a>
+                                <a href="tel:{{ user.application.legal_advisor.phone_number }}">{{ user.application.legal_advisor.phone_number }}</a>
                             </div>
                         </div>
+                        {% endif %}
                         <div class="item">
                             <i class="map marker alternate icon"></i>
                             <div class="content">
+                                <!-- TODO -->
                                 &nbsp;New York
                             </div>
                         </div>
@@ -75,12 +82,15 @@
                 </div>
                 <div class="content">
                     <div class="ui sub header">
+                        <!-- TODO -->
                         Bio
                     </div>
                     <p>
+                        <!-- TODO -->
                         Hello, my name is Stephanie! I'm currently a student at the University of Pennsylvania majoring the prestigious Jerome Fisher Program in Management and Technology. I like eating ramen and playing Breath of the Wild.</p>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="ten wide tablet nine wide computer column">
