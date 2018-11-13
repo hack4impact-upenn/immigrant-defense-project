@@ -22,7 +22,6 @@ def index():
         'checklist/index.html',
         default_checklist_items=default_checklist_items)
 
-
 @checklist.route('/add', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -93,16 +92,3 @@ def delete_default_checklist_item(id):
         flash('Error occurred. Please try again.', 'form-error')
         return redirect(url_for('checklist.index'))
     return redirect(url_for('checklist.index'))
-
-
-@checklist.route('/<int:user_id>/view', methods=['GET'])
-def view_all_checklist_items(user_id):
-    """View all checklist items, specific to each user"""
-    """Finding user, then accessing application"""
-    user = User.query.get(user_id)
-    if user is None or user.application is None:
-        abort(404)
-    user_checklist_items = UserChecklistItem.query.filter_by(application_id=user.application.id)
-    return render_template(
-        'checklist/view_checklist_items.html',
-        user_checklist_items=user_checklist_items)
