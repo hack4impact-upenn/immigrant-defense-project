@@ -20,6 +20,7 @@ class SurveyQuestion(db.Model):
     @staticmethod
     def generate_fake(count=5):
         fake = Faker()
+
         for i in range(count):
             question = SurveyQuestion(
                 content=f'Question #{i + 1}',
