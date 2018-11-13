@@ -127,6 +127,7 @@ def setup_general():
                 password=Config.USER_PASSWORD,
                 confirmed=True,
                 email=Config.USER_EMAIL)
+            user.application = Application()
             db.session.add(user)
             db.session.commit()
             print('Added applicant {}'.format(user.full_name()))
