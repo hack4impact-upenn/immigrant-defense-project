@@ -82,6 +82,7 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(index='advisor').first()
             else:
                 self.role = Role.query.filter_by(index='main').first()
+                self.application = Application()
 
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
