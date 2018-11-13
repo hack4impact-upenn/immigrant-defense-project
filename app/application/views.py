@@ -20,6 +20,8 @@ def index():
         applicants = User.query.filter(User.application != None).all()
     elif current_user.is_advisor():
         applicants = []
+    else:
+        return redirect(404)
         # applications = Application.query.filter_by(legal_advisor=current_user.id).all()
     return render_template('application/dashboard.html', applicants=applicants)
 
