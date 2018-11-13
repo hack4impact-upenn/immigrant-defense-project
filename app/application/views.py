@@ -14,16 +14,16 @@ application = Blueprint('application', __name__)
 @application.route('/', methods=['GET', 'POST'])
 def index():
     if current_user.is_applicant():
-        return redirect(url_for('application.view'), current_user.id)
+        return redirect(url_for('application.view', user_id=current_user.id))
     elif current_user.is_screener():
         return redirect(404)
     elif current_user.is_admin():
         applicants = User.query.filter(User.application != None).all()
     elif current_user.is_advisor():
-        applicants = []
+        applicants = User.query.filter(
+            User.application != None and User.application.legal_adivsor == current_user).all()
     else:
         return redirect(404)
-        # applications = Application.query.filter_by(legal_advisor=current_user.id).all()
 
     advisor_form = AssignAdvisorForm()
     if advisor_form.validate_on_submit():
@@ -38,7 +38,7 @@ def index():
         return redirect(url_for('application.index'))
 
     return render_template(
-        'application/dashboard.html', 
+        'application/dashboard.html',
         applicants=applicants,
         advisor_form=advisor_form)
 
