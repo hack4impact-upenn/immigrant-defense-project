@@ -43,11 +43,8 @@ def index():
             resp.set_cookie('option_ids', option_ids)
             return resp
         elif option.next_action == SurveyOptionAction.STOP:
-            # TODO: show error message (should be associated with the option as stop_description)
-            # TODO: add a button that, when pressed, clears the cookies 'question_id' and 'option_ids'
-            return f'STOP: {option.stop_description}'
+            return render_template('survey/stop_survey.html', stop_message=option.stop_description)
         elif option.next_action == SurveyOptionAction.COMPLETED or next_question is None:
-            # TODO: include user registration
             option_ids = option_ids.split(',')
             options = [SurveyOption.query.get(option_id) for option_id in option_ids]
             return render_template('survey/complete_survey.html', options=options)
@@ -63,6 +60,14 @@ def index():
     resp.set_cookie('question_id', str(question_id))
     return resp
 
+
+@survey.route('/clear')
+def restart_survey():
+    resp = make_response(redirect(url_for('survey.index')))
+    # clear cookies
+    resp.set_cookie('question_id', '', expires=0)
+    resp.set_cookie('option_ids', '', expires=0)
+    return resp
 
 @survey.route('/manage')
 def manage_questions():
