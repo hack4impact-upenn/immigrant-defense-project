@@ -35,9 +35,11 @@
                     Our mission is to secure fairness and justice for immigrants in the United States.<br />
                     We partner with legal service providers and community organizations to coordinate immigration-related pardons to protect immigrants from unfair deportations.
                 </p>
+                {% if not current_user %}
                 <a class="ui big primary button" href="/survey">
                     Take Survey
                 </a>
+                {% endif %}
             </div>
         </div>
     </body>
