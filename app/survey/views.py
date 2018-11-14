@@ -41,7 +41,7 @@ def index():
         elif option.next_action == SurveyOptionAction.STOP:
             # TODO: show error message (should be associated with the option as stop_description)
             # TODO: add a button that, when pressed, clears the cookies 'question_id' and 'option_ids'
-            return 'STOP'
+            return f'STOP: {option.stop_description}'
         elif option.next_action == SurveyOptionAction.COMPLETED or next_question is None:
             # TODO: include user registration
             options = [SurveyOption.query.get(option_id) for option_id in option_ids]
