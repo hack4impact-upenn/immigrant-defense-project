@@ -44,6 +44,7 @@ def index():
             return f'STOP: {option.stop_description}'
         elif option.next_action == SurveyOptionAction.COMPLETED or next_question is None:
             # TODO: include user registration
+            option_ids = option_ids.split(',')
             options = [SurveyOption.query.get(option_id) for option_id in option_ids]
             return render_template('survey/complete_survey.html', options=options)
         else: # option.next_action is a positive integer indicating the id of the next question
