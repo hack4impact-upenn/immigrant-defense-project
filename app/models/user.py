@@ -193,8 +193,8 @@ class User(UserMixin, db.Model):
             for question in questions:
                 db.session.add(SurveyResponse(
                     content=fake.sentence(),
+                    question_content=question.content,
                     application_id=application.id,
-                    question_id=question.id,
                 ))
             # Create user checklist items
             for default_checklist_item in default_checklist_items:
