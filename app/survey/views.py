@@ -1,4 +1,4 @@
-from flask import (Blueprint, abort, flash, redirect, render_template, request,
+from flask import (Blueprint, abort, flash, make_response, redirect, render_template, request,
                    url_for)
 from sqlalchemy.exc import IntegrityError
 
@@ -11,33 +11,52 @@ survey = Blueprint('survey', __name__)
 
 @survey.route('/', methods=['GET', 'POST'])
 def index():
-    question = SurveyQuestion.query.filter_by(rank=1).first()
-    if not question:
-        return redirect(404)
-    return redirect(url_for('survey.view_question', question_id=question.id))
+    question_id = request.cookies.get('question_id')
+    if question_id:
+        question = SurveyQuestion.query.get(question_id)
+    else:
+        question = SurveyQuestion.query.filter_by(rank=1).first()
+        if not question:
+            print('No questions')
+            return redirect(404)
+        question_id = question.id
 
-
-@survey.route('/<int:question_id>', methods=['GET', 'POST'])
-def view_question(question_id):
-    question = SurveyQuestion.query.get(question_id)
-    if not question:
-        print(f'Invalid SurveyQuestion id: {question_id}')
-        return redirect(404)
     form = generate_response_form(question)
     if form.validate_on_submit():
         option_id = form.response.data
-        option = SurveyOption.query.get(option_id)
-        if option.next_action == SurveyOptionAction.COMPLETED:
-            return "COMPLETED"
-        elif option.next_action == SurveyOptionAction.STOP:
-            return "STOP"
-        elif option.next_action == SurveyOptionAction.CONTINUE:
-            question = SurveyQuestion.query.filter_by(rank=question.rank + 1).first()
-            if not question:
-                return "COMPLETED"
-            return redirect(url_for('survey.view_question', question_id=question.id))
-    return render_template('survey/question.html', form=form)
+        option_ids = request.cookies.get('option_ids')
+        if not option_ids:
+            option_ids = str(option_id)
+        else:
+            option_ids += ',' + str(option_id)
 
+        option = SurveyOption.query.get(option_id)
+        next_question = SurveyQuestion.query.filter_by(rank=question.rank + 1).first()
+        if option.next_action == SurveyOptionAction.CONTINUE and next_question:
+            next_form = generate_response_form(next_question)
+            resp = make_response(render_template('survey/survey.html', form=next_form))
+            resp.set_cookie('question_id', str(next_question.id))
+            resp.set_cookie('option_ids', option_ids)
+            return resp
+        elif option.next_action == SurveyOptionAction.STOP:
+            # TODO: show error message (should be associated with the option as stop_description)
+            # TODO: add a button that, when pressed, clears the cookies 'question_id' and 'option_ids'
+            return 'STOP'
+        elif option.next_action == SurveyOptionAction.COMPLETED or next_question is None:
+            # TODO: include user registration
+            options = [SurveyOption.query.get(option_id) for option_id in option_ids]
+            return render_template('survey/complete_survey.html', options=options)
+        else: # option.next_action is a positive integer indicating the id of the next question
+            next_question = SurveyQuestion.query.get(option.next_action)
+            next_form = generate_response_form(next_question)
+            resp = make_response(render_template('survey/survey.html', form=next_form))
+            resp.set_cookie('question_id', str(next_question.id))
+            resp.set_cookie('option_ids', option_ids)
+            return resp
+
+    resp = make_response(render_template('survey/survey.html', form=form))
+    resp.set_cookie('question_id', str(question_id))
+    return resp
 
 @survey.route('/manage')
 def manage_questions():

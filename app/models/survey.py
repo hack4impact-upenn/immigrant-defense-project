@@ -45,13 +45,16 @@ class SurveyOption(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('survey_question.id'))
     content = db.Column(db.String, nullable=False)
     next_action = db.Column(db.Integer, nullable=False, default=SurveyOptionAction.CONTINUE)
+    stop_description = db.Column(db.String)
 
     @staticmethod
     def generate_fake(question, count=4):
+        fake = Faker()
         for i in range(random.randint(2, count)):
             option = SurveyOption(
                 question_id=question.id,
                 content=f'Option #{i + 1} for {question.content}',
+                stop_description=fake.sentence(),
             )
             db.session.add(option)
         try:
