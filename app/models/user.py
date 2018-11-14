@@ -207,12 +207,7 @@ class User(UserMixin, db.Model):
                     user.application = application
                     db_add_commit(application)
                     # Create responses to survey questions
-                    for question in questions:
-                        db.session.add(SurveyResponse(
-                            content=fake.sentence(),
-                            application_id=application.id,
-                            question_id=question.id,
-                        ))
+                    SurveyResponse.generate_fake(application)
                     # Create user checklist items
                     for default_checklist_item in default_checklist_items:
                         db.session.add(UserChecklistItem(
