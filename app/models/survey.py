@@ -62,6 +62,25 @@ class SurveyOption(db.Model):
         except IntegrityError:
             db.session.rollback()
 
+    def action_text(self):
+        if self.next_action == SurveyOptionAction.COMPLETED:
+            return 'Submit survey'
+        elif self.next_action == SurveyOptionAction.STOP:
+            if len(self.stop_description) > 30:
+                stop_description = self.stop_description[:30].strip() + '...'
+            else:
+                stop_description = self.stop_description
+            return f'End survey ({stop_description})'
+        elif self.next_action == SurveyOptionAction.CONTINUE:
+            return 'Continue to next question'
+        else:
+            question = SurveyQuestion.query.get(self.next_action)
+            if len(question.content) > 30:
+                question_content = question.content[:30].strip() + '...'
+            else:
+                question_content = question.content
+            return f'Skip to "{question_content}"'
+
 
 class SurveyResponse(db.Model):
     __tablename__ = 'survey_response'

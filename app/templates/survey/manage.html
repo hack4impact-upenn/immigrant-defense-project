@@ -1,0 +1,96 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="ui stackable grid container">
+    <div class="sixteen wide tablet twelve wide computer centered column">
+        <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+            <i class="caret left icon"></i>
+            Back to dashboard
+        </a>
+        <h2 class="ui header">
+            Survey Questions
+            <div class="sub header">
+                View and manage survey questions.
+            </div>
+        </h2>
+        <button class="ui button">New Question</button>
+        {% for q in questions %}
+        <div class="ui fluid card">
+            <div class="content">
+                <div class="header">
+                    {{ q.content }}
+                </div>
+                <div class="description">
+                    <p>
+                        {{ q.description }}
+                    </p>
+                    <!--confirmation modal for deleting a survey question-->
+                    <div id="modal-{{ q.id }}" class="ui tiny modal delete-survey-question-modal">
+                        <div class="header">Delete this question</div>
+                        <div class="content">
+                            <p>
+                                Are you sure you want to delete the following question?
+                            </p>
+                            <p>
+                                {{ q.content }}
+                            </p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui cancel button">Cancel</div>
+                            <a href="{{ url_for('survey.delete_question', id=q.id) }}" class="negative ui button">Yes, delete this question</a>
+                        </div>
+                    </div>
+                    <table class="ui celled table">
+                        <tbody>
+                            {% for o in q.options %}
+                            <tr>
+                                <td class="nine wide">{{ o.content }}</td>
+                                <td class="eight wide">{{ o.action_text() }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="extra content">
+                <div class="right floated">
+                    <a class="ui basic tiny button" href="{{ url_for('survey.edit_question', id=q.id) }}">
+                        <i class="icon edit"></i>
+                        Edit
+                    </a>
+                    <a class="ui basic tiny red button delete-survey-question" id="{{ q.id }}">
+                        <i class="icon trash alternate"></i>
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // searching within the survey questions
+        $('#search-survey-questions').keyup(function() {
+            var searchText = $(this).val();
+            if (searchText.length > 0) {
+                $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+            } else {
+                $('td.positive').removeClass('positive');
+                $('tr.hidden').removeClass('hidden').show();
+            }
+        });
+
+        // displaying modal for deleting an item when the delete button is clicked
+        $('.delete-survey-question').on('click', function(e) {
+            id = e.target.id; // gets the id and shows the appropriate modal
+            $('#modal-' + id).modal('show');
+        });
+    });
+</script>
+
+{% endblock %}
