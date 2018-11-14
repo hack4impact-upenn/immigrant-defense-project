@@ -34,6 +34,7 @@ class SurveyQuestion(db.Model):
 
 
 class SurveyOptionAction():
+    COMPLETED = -2      # survey is completed
     STOP = -1           # survey stops; applicant cannot proceed to make an account
     CONTINUE = 0        # default
 
