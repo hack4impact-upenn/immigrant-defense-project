@@ -30,7 +30,7 @@
         {# TODO: view questionaire responses #}
       {% elif current_user.is_advisor() %}
         {% set endpoints = ([
-          ('admin.index', 'Dashboard', 'user'),
+          ('advisor.index', 'Dashboard', 'user'),
           ('checklist.index', 'Checklist', 'list ui'),
           ('reminder.dashboard', 'Reminders', 'bell'),
           ('survey.manage_questions', 'Survey Responses', 'question'),
