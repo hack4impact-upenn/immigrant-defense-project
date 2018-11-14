@@ -64,7 +64,6 @@ def index():
 def manage_questions():
     """View and manage survey questions."""
     questions = SurveyQuestion.query.all()
-    # return render_template('survey/manage_questions.html', survey_questions=survey_questions)
     return render_template('survey/manage.html', questions=questions)
 
 
