@@ -22,26 +22,6 @@ def index():
     return render_template('admin/index.html')
 
 
-@admin.route('/new-user', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def new_user():
-    """Create a new user."""
-    form = NewUserForm()
-    if form.validate_on_submit():
-        user = User(
-            role=form.role.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            email=form.email.data,
-            password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('User {} successfully created'.format(user.full_name()),
-              'form-success')
-    return render_template('admin/new_user.html', form=form)
-
-
 @admin.route('/invite-user', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -190,41 +170,3 @@ def update_editor_contents():
     db.session.commit()
 
     return 'OK', 200
-
-
-@admin.route('/view_applications', methods=['GET'])
-@login_required
-@admin_required
-def view_applications():
-    """ A table of all the applications """
-    user = User.query.join(Application).filter(User.application_id != None).all()
-    return render_template(
-        'application/dashboard.html', user=user)
-
-
-@admin.route('/manage_default_checklist', methods=['GET'])
-@login_required
-@admin_required
-def manage_default_checklist():
-    """ Manage default checklist items """
-    default_checklist_items = DefaultChecklistItem.query.all()
-    return render_template(
-        'checklist/index.html',
-        default_checklist_items=default_checklist_items)
-
-
-@admin.route('/manage_survey_questions', methods=['GET'])
-@login_required
-@admin_required
-def manage_survey_questions():
-    survey_questions = SurveyQuestion.query.all()
-    return render_template(
-        'survey/manage.html', survey_questions=survey_questions)
-
-
-@admin.route('/manage_reminders', methods=['GET'])
-@login_required
-@admin_required
-def manage_reminders():
-    reminders = Reminder.query.all()
-    return render_template('reminder/index.html', reminders=reminders)
