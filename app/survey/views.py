@@ -1,5 +1,6 @@
 from flask import (Blueprint, abort, flash, make_response, redirect, render_template, request,
                    url_for)
+from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -11,6 +12,9 @@ survey = Blueprint('survey', __name__)
 
 @survey.route('/', methods=['GET', 'POST'])
 def index():
+    if current_user and not current_user.is_admin():
+        return redirect(404)
+
     question_id = request.cookies.get('question_id')
     if question_id:
         question = SurveyQuestion.query.get(question_id)
