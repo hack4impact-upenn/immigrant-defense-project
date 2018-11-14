@@ -12,7 +12,7 @@ survey = Blueprint('survey', __name__)
 
 @survey.route('/', methods=['GET', 'POST'])
 def index():
-    if current_user and not current_user.is_admin():
+    if current_user.is_authenticated and not current_user.is_admin():
         return redirect(404)
 
     question_id = request.cookies.get('question_id')
