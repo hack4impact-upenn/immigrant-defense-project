@@ -21,9 +21,7 @@ def new_question():
     if form.validate_on_submit():
         survey_question = SurveyQuestion(
             content=form.content.data,
-            description = form.description.data,
-            type = form.type.data,
-            screen = form.screen.data)
+            description = form.description.data)
         db.session.add(survey_question)
         db.session.commit()
         flash('Survey question successfully created', 'form-success')
@@ -39,8 +37,6 @@ def edit_question(id):
     form = NewSurveyQuestion()
     form.content.data = survey_question.content
     form.description.data = survey_question.description
-    form.type.data = survey_question.type
-    form.screen.data = survey_question.screen
     form_type = "Edit"
 
     if form.validate_on_submit():
