@@ -82,7 +82,6 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(index='advisor').first()
             else:
                 self.role = Role.query.filter_by(index='main').first()
-                self.application = Application()
 
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -189,6 +188,24 @@ class User(UserMixin, db.Model):
         questions = SurveyQuestion.query.all()
         default_checklist_items = DefaultChecklistItem.query.all()
 
+        def add_application_details(application):
+            # Create responses to survey questions
+            for question in questions:
+                db.session.add(SurveyResponse(
+                    content=fake.sentence(),
+                    application_id=application.id,
+                    question_id=question.id,
+                ))
+            # Create user checklist items
+            for default_checklist_item in default_checklist_items:
+                db.session.add(UserChecklistItem(
+                    title=default_checklist_item.title,
+                    description=default_checklist_item.description,
+                    completed=False,
+                    application_id=application.id,
+                ))
+            db.session.commit()
+
         seed()
         for role in roles:
             for i in range(count):
@@ -206,17 +223,11 @@ class User(UserMixin, db.Model):
                     application = Application()
                     user.application = application
                     db_add_commit(application)
-                    # Create responses to survey questions
-                    SurveyResponse.generate_fake(application)
-                    # Create user checklist items
-                    for default_checklist_item in default_checklist_items:
-                        db.session.add(UserChecklistItem(
-                            title=default_checklist_item.title,
-                            description=default_checklist_item.description,
-                            completed=False,
-                            application_id=application.id,
-                        ))
+                    add_application_details(application)
                 db_add_commit(user)
+        user = User.query.filter_by(email='user@idp.com').first()
+        if user:
+            add_application_details(user.application)
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()

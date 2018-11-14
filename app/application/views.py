@@ -42,6 +42,19 @@ def index():
         applicants=applicants,
         advisor_form=advisor_form)
 
+# 
+# @checklist.route('/user/<int:user_id>', methods=['GET'])
+# def view(user_id):
+#     """View all checklist items, specific to each user"""
+#     """Finding user, then accessing application"""
+#     user = User.query.get(user_id)
+#     if user is None or user.application is None:
+#         abort(404)
+#     user_checklist_items = UserChecklistItem.query.filter_by(application_id=user.application.id)
+#     return render_template(
+#         'checklist/view_checklist_items.html',
+#         user_checklist_items=user_checklist_items)
+
 
 @login_required
 @application.route('/<int:user_id>')
@@ -51,4 +64,4 @@ def view(user_id):
     user = User.query.get(user_id)
     if not user.application:
         return redirect(404)
-    return render_template('application/profile.html', application=user.application)
+    return render_template('application/profile.html', user=user)
