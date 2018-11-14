@@ -219,7 +219,7 @@ def manage_default_checklist():
 def manage_survey_questions():
     survey_questions = SurveyQuestion.query.all()
     return render_template(
-        'survey/manage_questions.html', survey_questions=survey_questions)
+        'survey/manage.html', survey_questions=survey_questions)
 
 
 @admin.route('/manage_reminders', methods=['GET'])
