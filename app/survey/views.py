@@ -69,6 +69,7 @@ def restart_survey():
     resp.set_cookie('option_ids', '', expires=0)
     return resp
 
+
 @survey.route('/manage')
 def manage_questions():
     """View and manage survey questions."""
@@ -87,26 +88,24 @@ def new_question():
         db.session.add(survey_question)
         db.session.commit()
         flash('Survey question successfully created', 'form-success')
-        return render_template('survey/new_question.html', form=form, type=type)
+        return redirect(url_for('survey.manage_questions'))
+
     return render_template('survey/new_question.html', form=form, type=type)
 
 
-@survey.route('/manage/<int:id>', methods=['GET', 'POST'])
-def edit_question(id):
+@survey.route('/manage/<int:question_id>', methods=['GET', 'POST'])
+def edit_question(question_id):
     """Edit a survey question's title and description."""
-    survey_question = SurveyQuestion.query.get(id)
+    survey_question = SurveyQuestion.query.get(question_id)
     if survey_question is None:
-        abort(404)
+        return redirect(404)
+
     form = NewSurveyQuestion()
-    form.content.data = survey_question.content
-    form.description.data = survey_question.description
     form_type = "Edit"
 
     if form.validate_on_submit():
         survey_question.content = form.content.data
         survey_question.description = form.description.data
-        survey_question.type = form.type.data
-        survey_question.screen = form.screen.data
         try:
             db.session.commit()
             flash('Survey question successfully edited.', 'form-success')
@@ -114,6 +113,9 @@ def edit_question(id):
             db.session.rollback()
             flash('An error has occurred. Please try again.', 'form-error')
         return render_template('survey/new_question.html', form=form, type=form_type)
+
+    form.content.data = survey_question.content
+    form.description.data = survey_question.description
     return render_template('survey/new_question.html', form=form, type=form_type)
 
 
