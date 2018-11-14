@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+<div class="ui stackable centered grid container">
+    <div class="twelve wide column">
+        <h3>Completed survey!</h3>
+        {% for o in options %}
+            <p>
+                {{ o.content }}
+            </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
