@@ -1,0 +1,20 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+<div class="ui stackable centered grid container" style="padding-top: 15%;">
+  <div class="six wide column">
+    <div class="ui fluid centered green card">
+      <div class="content">
+        <div class="header">Congratulations!</div>
+      </div>
+      <div class="content">
+        You qualify for legal assistance.
+      </div>
+      <div class="content">
+        <a class="ui button" href="{{ url_for('account.register')}}">Register</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

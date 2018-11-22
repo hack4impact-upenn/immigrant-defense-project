@@ -4,7 +4,10 @@
 {% block content %}
 <div class="ui stackable grid container">
     <div class="sixteen wide tablet twelve wide computer centered column">
-        <br />
+        <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+            <i class="caret left icon"></i>
+            Back to dashboard
+        </a>
         <h2 class="ui header">
             Manage Reminders
             <div class="sub header">
@@ -36,7 +39,8 @@
             </tbody>
         </table>
 
-        <a href="{{ url_for('reminder.new_form') }}" class="ui button">Schedule New Reminder</a>
+        <a href="{{ url_for('reminder.send_new_reminder_form') }}" class="ui black button">Send New Reminder</a>
+        <a href="{{ url_for('reminder.schedule_new_reminder_form') }}" class="ui button">Schedule Reminder for Later</a>
     </div>
 </div>
 

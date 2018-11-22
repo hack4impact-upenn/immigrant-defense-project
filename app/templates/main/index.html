@@ -1,17 +1,46 @@
-{% extends 'layouts/base.html' %}
+{% import 'macros/nav_macros.html' as nav %}
 
-{% block content %}
-    <div class="ui text container">
-      <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include 'partials/_head.html' %}
+        {# Any templates that extend this template can set custom_head_tags to add scripts to their page #}
+        {% block custom_head_tags %}{% endblock %}
+    </head>
+    <body>
+        <div class="ui inverted vertical masthead center aligned segment">
+            <div class="ui container">
+                {% block nav %}
+                  {# add dropdown variable here to the render_nav method to render dropdowns #}
+                  {{ nav.render_nav(current_user) }}
+                {% endblock %}
 
-        <p>This is <a href="http://hack4impact.org">Hack4Impact</a>'s web application template. We'll use this as a
-        foundation for each of our <a href="http://flask.pocoo.org">Flask</a> projects. The goal is to reduce the work
-        necessary to get a new project off the ground, by providing boilerplate code (such as account management
-        facilities), as well as uncontroversial and extensible defaults. We have integrated an
-        <a href="http://sass-lang.com">SCSS</a>-based asset pipeline based around a (fantastic!) framework
-        called <a href="http://semantic-ui.com">Semantic UI</a>. Much of this code is appropriated from the examples
-        in Miguel Grinberg's book, <a href="http://flaskbook.com"><em>Flask Web Development</em></a>.</p>
+                {% include 'partials/_flashes.html' %}
+                {# When extended, the content block contains all the html of the webpage #}
+                {% block content %}
+                {% endblock %}
 
-        <p>{{ lipsum(6) }}</p>
-    </div>
-{% endblock %}
+                {# Implement CSRF protection for site #}
+                {% if csrf_token()|safe %}
+                    <div style="visibility: hidden; display: none">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token()|safe }}">
+                    </div>
+                {% endif %}
+            </div>
+            <div class="ui text container" style="padding: 100px 0 100px 0;">
+                <h1 class="ui huge inverted header">
+                    Immigrant Defense Project
+                </h1>
+                <p>
+                    Our mission is to secure fairness and justice for immigrants in the United States.<br />
+                    We partner with legal service providers and community organizations to coordinate immigration-related pardons to protect immigrants from unfair deportations.
+                </p>
+                {% if not current_user.is_authenticated %}
+                <a class="ui big primary button" href="/survey">
+                    Take Survey
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

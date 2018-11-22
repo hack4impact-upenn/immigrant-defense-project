@@ -1,18 +1,25 @@
 from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, login_manager
-from . import applicant_profile
+from . import Application, DefaultChecklistItem, SurveyQuestion, SurveyResponse, UserChecklistItem
 
+def db_add_commit(item):
+    db.session.add(item)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
 
 class Permission:
-    GENERAL = 0x01 #Applicants
+    GENERAL = 0x01
     SCREENER = 0x02
     ADVISOR = 0x03
-    ADMINISTER = 0x04 #04 was ff before
+    ADMIN = 0x04
 
 
 class Role(db.Model):
@@ -27,22 +34,14 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.GENERAL, 'main', True), #Applicants
+            'User': (Permission.GENERAL, 'main', True),
+            'Screener': (Permission.SCREENER, 'screener', False),
+            'Advisor': (Permission.ADVISOR, 'advisor', False),
             'Administrator': (
-                Permission.ADMINISTER,
+                Permission.ADMIN,
                 'admin',
                 True  # grants all permissions
             ),
-            'Screener': (
-                Permission.SCREENER,
-                'screener',
-                False
-            ),
-            'Advisor': (
-                Permission.ADVISOR,
-                'advisor',
-                False
-            )
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -65,26 +64,24 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    phone_number = db.Column(db.String(32), index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    applicant_profile_id = db.Column(db.Integer, db.ForeignKey('applicant_profile.id'))
-    applicant_profile = db.relationship("ApplicantProfile", uselist = False, back_populates="user")
+    application_id = db.Column(db.Integer, db.ForeignKey('application.id', use_alter=True))
+    application = db.relationship("Application", foreign_keys=[application_id], uselist=False, backref='user')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['ADMIN_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADMINISTER).first()
-            if self.email == current_app.config['SCREENER_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADVISOR).first()
-            if self.email == current_app.config['ADVISOR_EMAIL']:
-                self.role = Role.query.filter_by(
-                    permissions=Permission.ADVISOR).first()
-            if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
+                self.role = Role.query.filter_by(index='admin').first()
+            elif self.email == current_app.config['SCREENER_EMAIL']:
+                self.role = Role.query.filter_by(index='screener').first()
+            elif self.email == current_app.config['ADVISOR_EMAIL']:
+                self.role = Role.query.filter_by(index='advisor').first()
+            else:
+                self.role = Role.query.filter_by(index='main').first()
 
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -93,17 +90,17 @@ class User(UserMixin, db.Model):
         return self.role is not None and \
             (self.role.permissions & permissions) == permissions
 
-    def is_admin(self):
-        return self.role_id == 4
-
     def is_applicant(self):
         return self.role_id == 1
+
+    def is_screener(self):
+        return self.role_id == 2
 
     def is_advisor(self):
         return self.role_id == 3
 
-    def is_screener(self):
-        return self.role_id == 2
+    def is_admin(self):
+        return self.role_id == 4
 
     @property
     def password(self):
@@ -163,8 +160,7 @@ class User(UserMixin, db.Model):
         if self.query.filter_by(email=new_email).first() is not None:
             return False
         self.email = new_email
-        db.session.add(self)
-        db.session.commit()
+        db_add_commit(self)
         return True
 
     def reset_password(self, token, new_password):
@@ -177,38 +173,61 @@ class User(UserMixin, db.Model):
         if data.get('reset') != self.id:
             return False
         self.password = new_password
-        db.session.add(self)
-        db.session.commit()
+        db_add_commit(self)
         return True
 
     @staticmethod
     def generate_fake(count=100, **kwargs):
         """Generate a number of fake users for testing."""
-        from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
 
         fake = Faker()
+        Role.insert_roles()
         roles = Role.query.all()
+        questions = SurveyQuestion.query.all()
+        default_checklist_items = DefaultChecklistItem.query.all()
+
+        def add_application_details(application):
+            # Create responses to survey questions
+            for question in questions:
+                db.session.add(SurveyResponse(
+                    content=fake.sentence(),
+                    question_content=question.content,
+                    application_id=application.id,
+                ))
+            # Create user checklist items
+            for default_checklist_item in default_checklist_items:
+                db.session.add(UserChecklistItem(
+                    title=default_checklist_item.title,
+                    description=default_checklist_item.description,
+                    completed=False,
+                    application_id=application.id,
+                ))
+            db.session.commit()
 
         seed()
-        for i in range(count):
-            role = choice(roles)
-            u = User(
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                email=fake.email(),
-                password='password',
-                confirmed=True,
-                role=role,
-                **kwargs)
-            if role.name == 'User':
-                u.applicant_profile = ApplicantProfile.generate_fake()
-            db.session.add(u)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
+        for role in roles:
+            for i in range(count):
+                user = User(
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    email=fake.email(),
+                    phone_number=fake.phone_number(),
+                    password='password',
+                    confirmed=True,
+                    role=role,
+                    **kwargs)
+                if user.role.permissions == Permission.GENERAL:
+                    # Create application
+                    application = Application()
+                    user.application = application
+                    db_add_commit(application)
+                    add_application_details(application)
+                db_add_commit(user)
+        user = User.query.filter_by(email='user@idp.com').first()
+        if user:
+            add_application_details(user.application)
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()

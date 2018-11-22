@@ -110,21 +110,21 @@ class UserModelTestCase(unittest.TestCase):
         Role.insert_roles()
         u = User(email='user@example.com', password='password')
         self.assertTrue(u.can(Permission.GENERAL))
-        self.assertFalse(u.can(Permission.ADMINISTER))
+        self.assertFalse(u.can(Permission.ADMIN))
 
     def test_make_administrator(self):
         Role.insert_roles()
         u = User(email='user@example.com', password='password')
-        self.assertFalse(u.can(Permission.ADMINISTER))
+        self.assertFalse(u.can(Permission.ADMIN))
         u.role = Role.query.filter_by(
-            permissions=Permission.ADMINISTER).first()
-        self.assertTrue(u.can(Permission.ADMINISTER))
+            permissions=Permission.ADMIN).first()
+        self.assertTrue(u.can(Permission.ADMIN))
 
     def test_administrator(self):
         Role.insert_roles()
-        r = Role.query.filter_by(permissions=Permission.ADMINISTER).first()
+        r = Role.query.filter_by(permissions=Permission.ADMIN).first()
         u = User(email='user@example.com', password='password', role=r)
-        self.assertTrue(u.can(Permission.ADMINISTER))
+        self.assertTrue(u.can(Permission.ADMIN))
         self.assertTrue(u.can(Permission.GENERAL))
         self.assertTrue(u.is_admin())
 

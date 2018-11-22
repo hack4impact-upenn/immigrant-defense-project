@@ -1,0 +1,97 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+      <div class="ui hidden divider"></div>
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Applications
+                <div class="sub header">
+                    View and manage applications.
+                </div>
+            </h2>
+            <h3 class="ui header">
+                Assign Advisor to Selected Applicants
+            </h3>
+            {% set flashes = {
+               'error':   get_flashed_messages(category_filter=['form-error']),
+               'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(advisor_form, flashes) }}
+            {{ f.render_form_field(advisor_form.advisor) }}
+            {{ f.render_form_field(advisor_form.submit) }}
+            {{ advisor_form.applicant_ids }}
+            {{ f.end_form(advisor_form) }}
+            <div class="ui middle aligned divided list">
+                <div class="item">
+                    <div class="content">
+                        <div class="ui left icon fluid input">
+                            <i class="search icon"></i>
+                            <input id="search-applications" type="text" placeholder="Search applications...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="ui searchable sortable unstackable selectable celled table" style="overflow-x: scroll;">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Phone Number</th>
+                        <th>Stage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for u in applicants %}
+                    <tr class="applicant-row" application-profile-id={{ u.id }}>
+                        <td>{{ u.first_name }}</td>
+                        <td>{{ u.last_name }}</td>
+                        <td>{{ u.phone_number }}</td>
+                        <td>{{ u.application.stage}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // searching within the checklist items
+            $('#search-applications').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+            var selectedProfileIds = new Set();
+
+            // Allows admin to select applications
+            $('.applicant-row').click(function (e) {
+                applicantProfileId = this.getAttribute('application-profile-id');
+                if (selectedProfileIds.has(applicantProfileId)) {
+                    selectedProfileIds.delete(applicantProfileId);
+                    $(this).removeClass('active');
+                } else {
+                    selectedProfileIds.add(applicantProfileId);
+                    $(this).addClass('active');
+                }
+                $('#applicant_ids').val(Array.from(selectedProfileIds));
+            });
+        });
+    </script>
+{% endblock %}

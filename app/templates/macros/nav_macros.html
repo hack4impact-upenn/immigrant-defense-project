@@ -20,15 +20,40 @@
 #}
 
 {% macro header_items(current_user) %}
-    {% set endpoints = [
-      ('main.index', config.APP_NAME, 'home'),
-      ('main.about', 'About', 'info')
-    ]%}
-    {% set user = [] %}
+    {% set endpoints = [] %}
     {% if current_user.is_authenticated %}
-      {% set user = ([(current_user.role.index + '.index', current_user.role.name + ' Dashboard', 'user')]) %}
+      {% if current_user.is_admin() %}
+        {% set endpoints = ([
+          ('main.index', 'Immigrant Defense Project', 'home'),
+          ('admin.index', 'Dashboard', 'chart bar outline'),
+          ])%}
+        {# TODO: view questionaire responses #}
+      {% elif current_user.is_advisor() %}
+        {% set endpoints = ([
+          ('advisor.index', 'Dashboard', 'user'),
+          ('checklist.index', 'Checklist', 'list ui'),
+          ('reminder.dashboard', 'Reminders', 'bell'),
+          ('survey.manage_questions', 'Survey Responses', 'question'),
+        ])%}
+        {# TODO: client checklist items #}
+      {% elif current_user.is_screener() %}
+        {% set endpoints = ([
+          ('screener.index', 'Dashboard', 'user'),
+          ('survey.manage_questions', 'Survey Responses', 'question'),
+        ])%}
+      {% elif current_user.is_applicant() %}
+        {% set endpoints = ([
+          ('main.index', 'Immigrant Defense Project', 'home'),
+          ('application.index', 'Application', 'file alternate outline'),
+        ])%}
+      {% endif %}
+    {% else %}
+      {% set endpoints = [
+        ('main.index', config.APP_NAME, 'home'),
+        ('main.about', 'About', 'info')
+      ]%}
     {% endif %}
-    {{ render_menu_items( endpoints +  user ) }}
+    {{ render_menu_items( endpoints ) }}
 {% endmacro %}
 
 {# This renders the right hand side of the navigation bar. If the user is logged in, it links to
@@ -43,7 +68,6 @@
       {{ render_menu_items(endpoints) }}
     {% else %}
       {% set endpoints = [
-        ('account.register', 'Register', 'list layout'),
         ('account.login', 'Log In', 'sign in')
       ] %}
       {{ render_menu_items(endpoints) }}
