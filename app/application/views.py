@@ -31,7 +31,7 @@ def index():
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
             data.legal_advisor = advisor_form.advisor.data
-            data.stage = Stage.MATCHED_ADVISOR
+            data.stage = Stage.MATCHED_ADVISOR if advisor_form.advisor.data is not None else Stage.UNMATCHED_PARTNER    
             db.session.add(data)
         db.session.commit()
         flash('Successfully assigned advisors!', 'form-success')
