@@ -3,7 +3,7 @@ import boto3
 import json
 import time
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect
 
 from app.models import EditableHTML
 
@@ -30,10 +30,16 @@ def sign_s3():
     TARGET_FOLDER = 'json/'
     # Load required data from the request
     pre_file_name = request.args.get('file-name')
+    if pre_file_name is None:
+        return redirect(404)
+
     file_name = ''.join(pre_file_name.split('.')[:-1]) +\
                 str(time.time()).replace('.',  '-') + '.' +  \
                 ''.join(pre_file_name.split('.')[-1:])
     file_type = request.args.get('file-type')
+
+    if file_type is None:
+        return redirect(404)
 
     # Initialise the S3 client
     s3 = boto3.client('s3', 'us-east-2')
