@@ -1,13 +1,13 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
 
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.checklist.forms import DefaultChecklistItemForm
+from app.checklist.forms import DefaultChecklistItemForm, UploadDocumentForm
 from app.decorators import admin_required
-from app.models import DefaultChecklistItem, UserChecklistItem
+from app.models import DefaultChecklistItem, UserChecklistItem, Document, User
 
 checklist = Blueprint('checklist', __name__)
 
@@ -21,6 +21,29 @@ def index():
     return render_template(
         'checklist/index.html',
         default_checklist_items=default_checklist_items)
+
+
+@checklist.route('/upload', methods=["GET", "POST"])
+def upload():
+    """Upload a pdf."""
+    form = UploadDocumentForm()
+
+    doc = Document.query.get(current_user.id)
+
+    if form.validate_on_submit():
+        if doc is None:
+            doc = Document()
+            doc.user_id = current_user.id
+        
+        doc.document_urls = form.file_urls.data
+        db.session.add(doc)
+        db.session.commit()
+        return redirect(url_for('checklist.index'))
+
+    form.file_urls.data = doc.document_urls if doc is not None else None
+
+    return render_template('checklist/upload_document.html', form=form)
+
 
 @checklist.route('/add', methods=['GET', 'POST'])
 @login_required
