@@ -41,24 +41,24 @@
                     </td>
                     <td class="top aligned">
                         <div class="field">
-                            <select class="ui search dropdown option-dropdown">
+                            <select class="ui search dropdown option-dropdown" id="next-question-select">
                                 <option value="0">Continue to next question</option>
                                 <option value="-1">Stop – Does not qualify for a pardon</option>
                                 <option value="-2">Submit – Qualifies for legal assistance</option>
                                 <option value="JUMP">Skip to another question</option>
                             </select>
                         </div>
-                        <div class="field">
+                        <div class="field" id="next-question-skip">
                             <label>Skip to which question?</label>
                             <select class="ui search dropdown option-dropdown">
-                                <option value="">Please select a question</option>
+                                <option value="">Please select a question</option> <!--TODO-->
                                 <option>Question #1</option>
                                 <option>Question #2</option>
                                 <option>Question #3</option>
                                 <option>Question #4</option>
                             </select>
                         </div>
-                        <div class="field">
+                        <div class="field" id="next-question-stop">
                             <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
                             <textarea rows="3" placeholder=""></textarea>
                         </div>
@@ -72,4 +72,33 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+    $("#next-question-skip").hide();
+    $("#next-question-stop").hide();
+
+    $(document).ready(function() {
+        $("#next-question-select").change(function() {
+            var test = $(this).val();
+            switch(test) {
+              case "0": // continue
+                $("#next-question-skip").hide();
+                $("#next-question-stop").hide();
+                break;
+              case "-1": // stop
+                $("#next-question-skip").hide();
+                $("#next-question-stop").show();
+                break;
+              case "-2": // submit
+                $("#next-question-skip").hide();
+                $("#next-question-stop").hide();
+                break;
+              case "JUMP": // skip
+                $("#next-question-skip").show();
+                $("#next-question-stop").hide();
+                break;
+            }
+        });
+    });
+</script>
 {% endblock %}
