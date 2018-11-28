@@ -46,6 +46,7 @@
                         <th>Last Name</th>
                         <th>Phone Number</th>
                         <th>Stage</th>
+                        <th>Completed Checklist</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,14 @@
                         <td>{{ u.last_name }}</td>
                         <td>{{ u.phone_number }}</td>
                         <td>{{ u.application.stage}}</td>
+                        <td>
+                          <div class="ui buttons">
+                            <a href="{{ url_for('application.change_status_to_complete', user_id=u.id) }}" class="ui small compact icon button">
+                              <i class="check icon"></i>
+                            </a>
+                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                          </div>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

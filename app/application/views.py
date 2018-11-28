@@ -3,9 +3,13 @@ from flask import (Blueprint, abort, flash, redirect, render_template, request,
 from flask_login import current_user, login_required
 from flask_rq import get_queue
 
+from sqlalchemy.exc import IntegrityError
+
 from app import db
 from app.models import Application, User, Stage
 from app.application.forms import AssignAdvisorForm
+
+from app.decorators import admin_required
 
 application = Blueprint('application', __name__)
 
@@ -65,3 +69,39 @@ def view(user_id):
     if not user.application:
         return redirect(404)
     return render_template('application/profile.html', user=user)
+
+@login_required     
+@application.route('<int:user_id>/change_status_to_complete')      
+def change_status_to_complete(user_id):        
+    application = Application.query.join(User, User.application_id == Application.id).filter(User.id == user_id).first()       
+    if application is None:        
+        abort(404)
+
+    # identity checks
+    user = User.query.get(user_id)
+    if current_user.is_applicant():
+        abort(404)
+    elif current_user.is_advisor():
+        if application.legal_advisor_id != current_user.id:
+            abort(404)
+        
+    checklist_complete = True      
+        
+    for c in application.checklist_items:     
+        if c.documents == None:        
+            checklist_complete = False     
+        
+    if checklist_complete:     
+        try:       
+            application.stage = Stage.COMPLETED_CHECKLIST      
+            db.session.commit()        
+            flash(     
+                'Application stage {} successfully changed to completed checklist.'.format(        
+                    application.user), 'application-stage-update-success')     
+        except IntegrityError as e:     
+            db.session.rollback()      
+            flash('Error Occurred. Please try again.', 'application-stage-update-error')       
+    else:      
+        flash('Checklist not complete. Some documents were not uploaded.', 'application-stage-update-error')       
+        
+    return redirect(url_for('application.index'))
