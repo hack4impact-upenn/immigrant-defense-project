@@ -35,7 +35,7 @@ class InviteUserForm(Form):
         'Account type',
         validators=[InputRequired()],
         get_label='name',
-        query_factory=lambda: db.session.query(Role).order_by('permissions'))
+        query_factory=lambda: db.session.query(Role).order_by('permissions').filter(Role.name != 'User'))
     first_name = StringField(
         'First name', validators=[InputRequired(),
                                   Length(1, 64)])

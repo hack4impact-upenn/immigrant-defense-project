@@ -5,9 +5,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import Application, SurveyQuestion, SurveyResponse
 from .. import db, login_manager
-
+from . import Application, DefaultChecklistItem, SurveyQuestion, SurveyResponse, UserChecklistItem
 
 def db_add_commit(item):
     db.session.add(item)
@@ -187,6 +186,25 @@ class User(UserMixin, db.Model):
         Role.insert_roles()
         roles = Role.query.all()
         questions = SurveyQuestion.query.all()
+        default_checklist_items = DefaultChecklistItem.query.all()
+
+        def add_application_details(application):
+            # Create responses to survey questions
+            for question in questions:
+                db.session.add(SurveyResponse(
+                    content=fake.sentence(),
+                    question_content=question.content,
+                    application_id=application.id,
+                ))
+            # Create user checklist items
+            for default_checklist_item in default_checklist_items:
+                db.session.add(UserChecklistItem(
+                    title=default_checklist_item.title,
+                    description=default_checklist_item.description,
+                    completed=False,
+                    application_id=application.id,
+                ))
+            db.session.commit()
 
         seed()
         for role in roles:
@@ -205,15 +223,11 @@ class User(UserMixin, db.Model):
                     application = Application()
                     user.application = application
                     db_add_commit(application)
-                    # Create responses to survey questions
-                    for question in questions:
-                        response = SurveyResponse(
-                            content=fake.sentence(),
-                            application_id=application.id,
-                            question_id=question.id,
-                        )
-                        db.session.add(response)
+                    add_application_details(application)
                 db_add_commit(user)
+        user = User.query.filter_by(email='user@idp.com').first()
+        if user:
+            add_application_details(user.application)
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()

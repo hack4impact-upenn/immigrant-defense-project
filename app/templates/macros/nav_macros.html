@@ -24,17 +24,13 @@
     {% if current_user.is_authenticated %}
       {% if current_user.is_admin() %}
         {% set endpoints = ([
-          ('admin.index', 'Dashboard', 'user'),
-          ('application.index', 'Applications', 'file outline'),
-          ('checklist.index', 'Checklist', 'list ui'),
-          ('survey.manage_questions', 'Survey Questions', 'question'),
-          ('survey.manage_questions', 'Survey Responses', 'question'),
-          ('reminder.dashboard', 'Reminders', 'bell')
+          ('main.index', 'Immigrant Defense Project', 'home'),
+          ('admin.index', 'Dashboard', 'chart bar outline'),
           ])%}
         {# TODO: view questionaire responses #}
       {% elif current_user.is_advisor() %}
         {% set endpoints = ([
-          ('admin.index', 'Dashboard', 'user'),
+          ('advisor.index', 'Dashboard', 'user'),
           ('checklist.index', 'Checklist', 'list ui'),
           ('reminder.dashboard', 'Reminders', 'bell'),
           ('survey.manage_questions', 'Survey Responses', 'question'),
@@ -47,9 +43,8 @@
         ])%}
       {% elif current_user.is_applicant() %}
         {% set endpoints = ([
-          ('application.index', 'Application', 'file outline'),
-          ('survey.manage_questions', 'Survey', 'question'),
-          ('checklist.index', 'Checklist', 'list ui'),
+          ('main.index', 'Immigrant Defense Project', 'home'),
+          ('application.index', 'Application', 'file alternate outline'),
         ])%}
       {% endif %}
     {% else %}
@@ -73,7 +68,6 @@
       {{ render_menu_items(endpoints) }}
     {% else %}
       {% set endpoints = [
-        ('account.register', 'Register', 'list layout'),
         ('account.login', 'Log In', 'sign in')
       ] %}
       {{ render_menu_items(endpoints) }}

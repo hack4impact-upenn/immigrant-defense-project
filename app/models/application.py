@@ -21,7 +21,7 @@ class Application(db.Model):
     legal_advisor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     legal_advisor = db.relationship('User', foreign_keys=[legal_advisor_id], backref='client_applications')
 
-    user_checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
+    checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
     survey_responses = db.relationship('SurveyResponse', backref='application', lazy=True)
 
     def get_id(self):

@@ -12,7 +12,7 @@ from rq import Connection, Queue, Worker
 
 from app import create_app, db
 from app.models import (Application, DefaultChecklistItem, Reminder, Role,
-                        SurveyQuestion, SurveyResponse, User,
+                        SurveyQuestion, SurveyOption, SurveyResponse, User,
                         UserChecklistItem)
 from app.sms import check_reminders
 
@@ -61,6 +61,8 @@ def add_fake_data(number_users):
     Adds fake data to the database.
     """
     SurveyQuestion.generate_fake()
+    for question in SurveyQuestion.query.all():
+        SurveyOption.generate_fake(question)
     DefaultChecklistItem.generate_fake()
     User.generate_fake(count=number_users)
     Reminder.generate_fake()
@@ -127,6 +129,7 @@ def setup_general():
                 password=Config.USER_PASSWORD,
                 confirmed=True,
                 email=Config.USER_EMAIL)
+            user.application = Application()
             db.session.add(user)
             db.session.commit()
             print('Added applicant {}'.format(user.full_name()))
