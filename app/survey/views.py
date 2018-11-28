@@ -84,7 +84,8 @@ def new_question():
     if form.validate_on_submit():
         survey_question = SurveyQuestion(
             content=form.content.data,
-            description=form.description.data)
+            description=form.description.data,
+            rank=SurveyQuestion.next_rank())
         db.session.add(survey_question)
         db.session.commit()
         flash('Survey question successfully created', 'form-success')
