@@ -81,6 +81,7 @@ def manage_questions():
 def new_question():
     form = NewSurveyQuestion()
     type = "Add New"
+    questions = SurveyQuestion.query.all()
     if form.validate_on_submit():
         survey_question = SurveyQuestion(
             content=form.content.data,
@@ -91,7 +92,7 @@ def new_question():
         flash('Survey question successfully created', 'form-success')
         return redirect(url_for('survey.manage_questions'))
 
-    return render_template('survey/new_question.html', form=form, type=type)
+    return render_template('survey/new_question.html', form=form, type=type, questions=questions, options=[])
 
 
 @survey.route('/manage/<int:question_id>', methods=['GET', 'POST'])
@@ -103,6 +104,7 @@ def edit_question(question_id):
 
     form = NewSurveyQuestion()
     form_type = "Edit"
+    questions = SurveyQuestion.query.all()
 
     if form.validate_on_submit():
         survey_question.content = form.content.data
@@ -117,7 +119,7 @@ def edit_question(question_id):
 
     form.content.data = survey_question.content
     form.description.data = survey_question.description
-    return render_template('survey/new_question.html', form=form, type=form_type)
+    return render_template('survey/new_question.html', form=form, type=form_type, questions=questions, options=survey_question.options)
 
 
 @survey.route('/manage/<int:id>/delete')
