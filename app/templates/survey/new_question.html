@@ -1,6 +1,11 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
+{% set flashes = {
+'success': get_flashed_messages(category_filter=['form-success']),
+'error': get_flashed_messages(category_filter=['form-error'])
+} %}
+
 {% block content %}
 <div class="ui stackable centered grid container">
     <div class="twelve wide column">
@@ -9,10 +14,62 @@
             Back to Survey Questions
         </a>
         <h2 class="ui header">
-        {{ type }} Survey Question
+            {{ type }} Survey Question
         </h2>
 
-        {{ f.render_form(form) }}
+        {{ f.begin_form(form, flashes) }}
+        <div style="display:none;">
+            {{ f.render_form_field(form.csrf_token) }}
+        </div>
+
+        {{ f.render_form_field(form.content) }}
+        {{ f.render_form_field(form.description) }}
+
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th class="ten wide">Response Option</th>
+                    <th class="eight wide">If selected...</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="top aligned">
+                        <div class="field">
+                            <textarea rows="3">Is your conviction for an offense involving a firearm, crime against/involving a child, violation of a protection order, or crime of domestic violence?</textarea>
+                        </div>
+                    </td>
+                    <td class="top aligned">
+                        <div class="field">
+                            <select class="ui search dropdown option-dropdown">
+                                <option value="0">Continue to next question</option>
+                                <option value="-1">Stop – Does not qualify for a pardon</option>
+                                <option value="-2">Submit – Qualifies for legal assistance</option>
+                                <option value="JUMP">Skip to another question</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Skip to which question?</label>
+                            <select class="ui search dropdown option-dropdown">
+                                <option value="">Please select a question</option>
+                                <option>Question #1</option>
+                                <option>Question #2</option>
+                                <option>Question #3</option>
+                                <option>Question #4</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
+                            <textarea rows="3" placeholder=""></textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{ f.render_form_field(form.submit) }}
+        {{ f.end_form(form) }}
+
     </div>
 </div>
 {% endblock %}

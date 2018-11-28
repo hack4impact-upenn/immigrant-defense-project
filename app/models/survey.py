@@ -32,6 +32,12 @@ class SurveyQuestion(db.Model):
             except IntegrityError:
                 db.session.rollback()
 
+    def truncated_content(self, max_length=30, suffix='...'):
+        if len(self.content) <= max_length:
+            return self.content
+        else:
+            return ' '.join(self.content[:max_length + 1].split(' ')[0:-1]) + suffix
+
 
 class SurveyOptionAction():
     COMPLETED = -2      # survey is completed
@@ -66,20 +72,19 @@ class SurveyOption(db.Model):
         if self.next_action == SurveyOptionAction.COMPLETED:
             return 'Submit survey'
         elif self.next_action == SurveyOptionAction.STOP:
-            if len(self.stop_description) > 30:
-                stop_description = self.stop_description[:30].strip() + '...'
-            else:
-                stop_description = self.stop_description
-            return f'End survey ({stop_description})'
+            return f'End survey ({self.truncated_stop_description()})'
         elif self.next_action == SurveyOptionAction.CONTINUE:
             return 'Continue to next question'
         else:
             question = SurveyQuestion.query.get(self.next_action)
-            if len(question.content) > 30:
-                question_content = question.content[:30].strip() + '...'
-            else:
-                question_content = question.content
-            return f'Skip to "{question_content}"'
+            return f'Skip to "{question.truncated_content()}"'
+
+    def truncated_stop_description(self, max_length=60, suffix='...'):
+        if len(self.stop_description) <= max_length:
+            return self.stop_description
+        else:
+            return ' '.join(self.stop_description[:max_length + 1].split(' ')[0:-1]) + suffix
+
 
 
 class SurveyResponse(db.Model):

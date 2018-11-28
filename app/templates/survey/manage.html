@@ -13,7 +13,7 @@
                 View and manage survey questions.
             </div>
         </h2>
-        <button class="ui button">New Question</button>
+        <a class="ui button" href="{{ url_for('survey.new_question') }}">New Question</a>
         {% for q in questions %}
         <div class="ui fluid card">
             <div class="content">
@@ -28,12 +28,8 @@
                     <div id="modal-{{ q.id }}" class="ui tiny modal delete-survey-question-modal">
                         <div class="header">Delete this question</div>
                         <div class="content">
-                            <p>
-                                Are you sure you want to delete the following question?
-                            </p>
-                            <p>
-                                {{ q.content }}
-                            </p>
+                            <p>Are you sure you want to delete the following question?</p>
+                            <p>{{ q.content }}</p>
                         </div>
                         <div class="actions">
                             <div class="ui cancel button">Cancel</div>
@@ -54,7 +50,7 @@
             </div>
             <div class="extra content">
                 <div class="right floated">
-                    <a class="ui basic tiny button" href="{{ url_for('survey.edit_question', id=q.id) }}">
+                    <a class="ui basic tiny button" href="{{ url_for('survey.edit_question', question_id=q.id) }}">
                         <i class="icon edit"></i>
                         Edit
                     </a>
