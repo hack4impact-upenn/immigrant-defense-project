@@ -35,7 +35,7 @@
             <tbody>
                 {% if options %}
                     {% for option in options %}
-                    <tr>
+                    <tr id="option-row-{{ option.id }}">
                         <td class="top aligned">
                             <div class="field">
                                 <textarea rows="3">{{ option.content }}</textarea>
@@ -63,7 +63,7 @@
                                 <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
                                 <textarea rows="3" placeholder="">{{ option.stop_description }}</textarea>
                             </div>
-                            <div class="ui tiny red basic button delete-option-button" data-option-id="1">Delete</div>
+                            <div class="ui tiny red basic button delete-option-button" data-option-id="{{ option.id }}">Delete</div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -106,9 +106,11 @@
                 break;
             }
         });
-      
+
         $('.delete-option-button').on('click', function() {
             var optionId = $(this).data('option-id');
+            console.log($('#option-row-' + optionId));
+            $('#option-row-' + optionId).remove();
         });
     });
 </script>
