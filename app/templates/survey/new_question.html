@@ -25,7 +25,7 @@
         {{ f.render_form_field(form.content) }}
         {{ f.render_form_field(form.description) }}
 
-        <table class="ui celled table">
+        <table class="ui celled unstackable table">
             <thead>
                 <tr>
                     <th class="ten wide">Response Option</th>
@@ -33,37 +33,43 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="top aligned">
-                        <div class="field">
-                            <textarea rows="3">Is your conviction for an offense involving a firearm, crime against/involving a child, violation of a protection order, or crime of domestic violence?</textarea>
-                        </div>
-                    </td>
-                    <td class="top aligned">
-                        <div class="field">
-                            <select class="ui search dropdown option-dropdown" id="next-question-select">
-                                <option value="0">Continue to next question</option>
-                                <option value="-1">Stop – Does not qualify for a pardon</option>
-                                <option value="-2">Submit – Qualifies for legal assistance</option>
-                                <option value="JUMP">Skip to another question</option>
-                            </select>
-                        </div>
-                        <div class="field" id="next-question-skip">
-                            <label>Skip to which question?</label>
-                            <select class="ui search dropdown option-dropdown">
-                                <option value="">Please select a question</option> <!--TODO-->
-                                <option>Question #1</option>
-                                <option>Question #2</option>
-                                <option>Question #3</option>
-                                <option>Question #4</option>
-                            </select>
-                        </div>
-                        <div class="field" id="next-question-stop">
-                            <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
-                            <textarea rows="3" placeholder=""></textarea>
-                        </div>
-                    </td>
-                </tr>
+                {% if options %}
+                    {% for option in options %}
+                    <tr>
+                        <td class="top aligned">
+                            <div class="field">
+                                <textarea rows="3">{{ option.content }}</textarea>
+                            </div>
+                        </td>
+                        <td class="top aligned">
+                            <div class="field">
+                                <select class="ui search dropdown option-dropdown" id="next-question-select">
+                                    <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
+                                    <option value="-1" {% if option.next_action == -1 %}selected{% endif %}>Stop – Does not qualify for a pardon</option>
+                                    <option value="-2" {% if option.next_action == -2 %}selected{% endif %}>Submit – Qualifies for legal assistance</option>
+                                    <option value="JUMP" {% if option.next_action > 0 %}selected{% endif %}>Skip to another question</option>
+                                </select>
+                            </div>
+                            <div class="field" id="next-question-skip">
+                                <label>Skip to which question?</label>
+                                <select class="ui search dropdown option-dropdown">
+                                    <option value="">Please select a question</option>
+                                    {% for question in questions %}
+                                    <option value="{{ question.id }}" {% if question.id == option.next_action %}selected{% endif %}>{{ question.content }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="field" id="next-question-stop">
+                                <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
+                                <textarea rows="3" placeholder="">{{ option.stop_description }}</textarea>
+                            </div>
+                            <div class="ui tiny red basic button delete-option-button" data-option-id="1">Delete</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="2">Add New Option</td></tr>
+                {% endif %}
             </tbody>
         </table>
 
@@ -74,6 +80,7 @@
 </div>
 
 <script type="text/javascript">
+
     $("#next-question-skip").hide();
     $("#next-question-stop").hide();
 
@@ -99,6 +106,11 @@
                 break;
             }
         });
+      
+        $('.delete-option-button').on('click', function() {
+            var optionId = $(this).data('option-id');
+        });
     });
 </script>
+
 {% endblock %}
