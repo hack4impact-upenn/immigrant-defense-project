@@ -67,6 +67,13 @@ class User(UserMixin, db.Model):
     phone_number = db.Column(db.String(32), index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    location = db.Column(db.String(64))
+    clemency_familiarity = db.Column(db.Text())
+    law_experience = db.Column(db.Text())
+    immigrant_experience = db.Column(db.Text())
+    crime_experience = db.Column(db.Text())
+    bio = db.Column(db.Text())
+    languages = db.Column(db.Text())
 
     application_id = db.Column(db.Integer, db.ForeignKey('application.id', use_alter=True))
     application = db.relationship("Application", foreign_keys=[application_id], uselist=False, backref='user')
