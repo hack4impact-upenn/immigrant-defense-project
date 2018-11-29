@@ -43,14 +43,14 @@
                         </td>
                         <td class="top aligned">
                             <div class="field">
-                                <select class="ui search dropdown option-dropdown">
+                                <select class="ui search dropdown option-dropdown" id="next-question-select">
                                     <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
                                     <option value="-1" {% if option.next_action == -1 %}selected{% endif %}>Stop – Does not qualify for a pardon</option>
                                     <option value="-2" {% if option.next_action == -2 %}selected{% endif %}>Submit – Qualifies for legal assistance</option>
                                     <option value="JUMP" {% if option.next_action > 0 %}selected{% endif %}>Skip to another question</option>
                                 </select>
                             </div>
-                            <div class="field">
+                            <div class="field" id="next-question-skip">
                                 <label>Skip to which question?</label>
                                 <select class="ui search dropdown option-dropdown">
                                     <option value="">Please select a question</option>
@@ -59,7 +59,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="field">
+                            <div class="field" id="next-question-stop">
                                 <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
                                 <textarea rows="3" placeholder="">{{ option.stop_description }}</textarea>
                             </div>
@@ -81,13 +81,36 @@
 
 <script type="text/javascript">
 
+    $("#next-question-skip").hide();
+    $("#next-question-stop").hide();
 
-
-$(document).ready(function() {
-    $('.delete-option-button').on('click', function() {
-        var optionId = $(this).data('option-id');
+    $(document).ready(function() {
+        $("#next-question-select").change(function() {
+            var test = $(this).val();
+            switch(test) {
+              case "0": // continue
+                $("#next-question-skip").hide();
+                $("#next-question-stop").hide();
+                break;
+              case "-1": // stop
+                $("#next-question-skip").hide();
+                $("#next-question-stop").show();
+                break;
+              case "-2": // submit
+                $("#next-question-skip").hide();
+                $("#next-question-stop").hide();
+                break;
+              case "JUMP": // skip
+                $("#next-question-skip").show();
+                $("#next-question-stop").hide();
+                break;
+            }
+        });
+      
+        $('.delete-option-button').on('click', function() {
+            var optionId = $(this).data('option-id');
+        });
     });
-});
-
 </script>
+
 {% endblock %}
