@@ -47,6 +47,7 @@
                         <th>Phone Number</th>
                         <th>Stage</th>
                         <th>Completed Checklist</th>
+                        <th>Accept or Reject</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +61,20 @@
                           <div class="ui buttons">
                             <a href="{{ url_for('application.change_status_to_complete', user_id=u.id) }}" class="ui small compact icon button">
                               <i class="check icon"></i>
+                            </a>
+                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                          </div>
+                        </td>
+                        <td>
+                          <div class="ui buttons">
+                            <a href="{{ url_for('application.change_status_to_accepted', user_id=u.id) }}" class="ui small compact icon button">
+                              <i class="check icon"></i>
+                            </a>
+                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                          </div>
+                          <div class="ui buttons">
+                            <a href="{{ url_for('application.change_status_to_rejected', user_id=u.id) }}" class="ui small compact icon button">
+                              <i class="times icon"></i>
                             </a>
                             <!--we give the button and icon the same id to avoid weird things with hitboxes-->
                           </div>
