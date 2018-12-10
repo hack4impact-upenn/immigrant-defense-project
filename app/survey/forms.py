@@ -22,4 +22,5 @@ def generate_response_form(question):
 class NewSurveyQuestion(Form):
     content = StringField('Question', validators=[InputRequired()])
     description = TextAreaField('Description')
+    options = StringField('Options')
     submit = SubmitField('Save')
