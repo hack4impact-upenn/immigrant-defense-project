@@ -30,16 +30,18 @@
         {# TODO: view questionaire responses #}
       {% elif current_user.is_advisor() %}
         {% set endpoints = ([
-          ('advisor.index', 'Dashboard', 'user'),
+          ('advisor.index', 'Dashboard', 'home'),
           ('checklist.index', 'Checklist', 'list ui'),
           ('reminder.dashboard', 'Reminders', 'bell'),
           ('survey.manage_questions', 'Survey Responses', 'question'),
+          ('advisor.view_profile', 'Update Bio', 'user'),
         ])%}
         {# TODO: client checklist items #}
       {% elif current_user.is_screener() %}
         {% set endpoints = ([
-          ('screener.index', 'Dashboard', 'user'),
+          ('screener.index', 'Dashboard', 'home'),
           ('survey.manage_questions', 'Survey Responses', 'question'),
+          ('screener.view_profile', 'Update Bio', 'user'),
         ])%}
       {% elif current_user.is_applicant() %}
         {% set endpoints = ([

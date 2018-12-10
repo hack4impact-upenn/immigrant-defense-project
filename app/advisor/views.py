@@ -33,7 +33,7 @@ def edit_profile():
         user.languages = form.languages.data
         db.session.commit()
         flash(
-            'Profile for screener {} successfully updated.'.format(
+            'Profile for advisor {} successfully updated.'.format(
                 user.full_name()), 'form-success')
     form.location.data = user.location
     form.clemency_familiarity.data = user.clemency_familiarity
@@ -41,3 +41,13 @@ def edit_profile():
     form.bio.data = user.bio
     form.languages.data = user.languages
     return render_template('advisor/edit.html', user=user, form=form)
+
+@advisor.route('/profile', methods=['GET', 'POST'])
+@login_required
+@advisor_required
+def view_profile():
+    """Advisor profile page."""
+    user = User.query.filter_by(id=current_user.id).first()
+    if user is None:
+        abort(404)
+    return render_template('advisor/profile.html', user=user)

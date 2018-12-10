@@ -8,11 +8,11 @@ from app.models import Role, User
 
 class EditAdvisorInfoForm(Form):
     location = StringField(
-        'Location', validators=[Length(1, 64)])
+        'Location')
     bio = TextAreaField(
         'Bio', render_kw={"rows": 4})
     languages = StringField(
-        'Languages Spoken', validators=[Length(1, 128)])
+        'Languages Spoken')
     law_experience = TextAreaField(
         'Law Experience', render_kw={"rows": 3})
     clemency_familiarity = TextAreaField(

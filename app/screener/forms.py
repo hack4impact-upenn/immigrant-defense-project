@@ -9,11 +9,11 @@ from app.models import Role, User
 
 class EditScreenerInfoForm(Form):
     location = StringField(
-        'Location', validators=[Length(1, 64)])
+        'Location')
     bio = TextAreaField(
         'Bio', render_kw={"rows": 4})
     languages = StringField(
-        'Languages Spoken', validators=[Length(1, 128)])
+        'Languages Spoken')
     immigrant_experience = TextAreaField(
         'Prior Experience with Immigrants', render_kw={"rows": 3})
     crime_experience = TextAreaField(

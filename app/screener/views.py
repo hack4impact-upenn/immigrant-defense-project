@@ -41,3 +41,13 @@ def edit_profile():
     form.bio.data = user.bio
     form.languages.data = user.languages
     return render_template('screener/edit.html', user=user, form=form)
+
+@screener.route('/profile', methods=['GET', 'POST'])
+@login_required
+@screener_required
+def view_profile():
+    """Advisor profile page."""
+    user = User.query.filter_by(id=current_user.id).first()
+    if user is None:
+        abort(404)
+    return render_template('screener/profile.html', user=user)
