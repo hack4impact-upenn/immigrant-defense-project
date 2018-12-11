@@ -15,7 +15,7 @@ class AssignAdvisorForm(Form):
         validators=[InputRequired()],
         get_label='first_name',
         query_factory=lambda: db.session.query(User).filter(User.is_advisor(User)))
-    applicant_ids = HiddenField('Applicant Ids')
+    applicant_ids_advisor = HiddenField('Applicant Ids')
     submit = SubmitField('Assign Advisor')
     
 class AssignPartnerForm(Form):
@@ -25,5 +25,5 @@ class AssignPartnerForm(Form):
         validators=[InputRequired()],
         get_label='first_name',
         query_factory=lambda: db.session.query(User).filter(User.is_screener(User)))
-    applicant_ids = HiddenField('Applicant Ids')
+    applicant_ids_partner = HiddenField('Applicant Ids')
     submit = SubmitField('Assign Partner')

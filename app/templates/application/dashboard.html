@@ -26,7 +26,7 @@
             {{ f.begin_form(advisor_form, flashes) }}
             {{ f.render_form_field(advisor_form.advisor) }}
             {{ f.render_form_field(advisor_form.submit) }}
-            {{ advisor_form.applicant_ids }}
+            {{ advisor_form.applicant_ids_advisor }}
             {{ f.end_form(advisor_form) }}
 
             <h3 class="ui header">
@@ -40,7 +40,7 @@
             {{ f.begin_form(partner_form, flashes) }}
             {{ f.render_form_field(partner_form.partner) }}
             {{ f.render_form_field(partner_form.submit) }}
-            {{ partner_form.applicant_ids }}
+            {{ partner_form.applicant_ids_partner }}
             {{ f.end_form(partner_form) }}
 
             <div class="ui middle aligned divided list">
@@ -75,9 +75,13 @@
                         {% if u.application.legal_advisor %}
                             <td>{{ u.application.legal_advisor.first_name ~ " " ~ u.application.legal_advisor.last_name }}</td>
                         {% else %}
-                            <td>{{ "Not matched yet" }}</td>
+                            <td>{{ "No legal advisor matched yet" }}</td>
                         {% endif %}
-                        <td>{{ u.application.partner }}</td>
+                        {% if u.application.partner %}
+                            <td>{{ u.application.partner.first_name ~ " " ~ u.application.partner.last_name }}</td>
+                        {% else %}
+                            <td>{{ "No partner matched yet" }}</td>
+                        {% endif %}
                         <td>
                             <a href="{{ url_for('application.view', user_id=u.id) }}" class="ui small compact icon button">
                               View Application
@@ -132,7 +136,8 @@
                     selectedProfileIds.add(applicantProfileId);
                     $(this).addClass('active');
                 }
-                $('#applicant_ids').val(Array.from(selectedProfileIds));
+                $('#applicant_ids_advisor').val(Array.from(selectedProfileIds));
+                $('#applicant_ids_partner').val(Array.from(selectedProfileIds));
             });
         });
     </script>

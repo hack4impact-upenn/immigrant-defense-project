@@ -33,7 +33,7 @@ def index():
 
     advisor_form = AssignAdvisorForm()
     if advisor_form.validate_on_submit():
-        for app_id in advisor_form.applicant_ids.data.split(','):
+        for app_id in advisor_form.applicant_ids_advisor.data.split(','):
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
             data.legal_advisor = advisor_form.advisor.data
@@ -45,7 +45,7 @@ def index():
 
     partner_form = AssignPartnerForm()
     if partner_form.validate_on_submit():
-        for app_id in partner_form.applicant_ids.data.split(','):
+        for app_id in partner_form.applicant_ids_partner.data.split(','):
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
             data.partner = partner_form.partner.data
