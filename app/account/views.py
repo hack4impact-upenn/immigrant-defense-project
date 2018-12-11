@@ -31,6 +31,13 @@ def login():
 @account.route('/register', methods=['GET', 'POST'])
 def register():
     """Register a new user, and send them a confirmation email."""
+
+    # must pass the survey in order to be able to register
+    can_register = request.cookies.get('can_register')
+    if not can_register:
+        return redirect(403)
+
+    # passed survey
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
