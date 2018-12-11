@@ -11,6 +11,8 @@ from app.application.forms import AssignAdvisorForm, AssignPartnerForm
 
 from app.decorators import admin_required
 
+from app.application import utils
+
 application = Blueprint('application', __name__)
 
 
@@ -111,6 +113,72 @@ def change_status_to_complete(user_id):
             flash(     
                 'Application stage {} successfully changed to completed checklist.'.format(        
                     application.user), 'application-stage-update-success')     
+        except IntegrityError as e:     
+            db.session.rollback()      
+            flash('Error Occurred. Please try again.', 'application-stage-update-error')       
+    else:      
+        flash('Checklist not complete. Some documents were not uploaded.', 'application-stage-update-error')       
+        
+    return redirect(url_for('application.index'))
+
+@login_required     
+@application.route('<int:user_id>/change_status_to_rejected')      
+def change_status_to_rejected(user_id):        
+    application = Application.query.join(User, User.application_id == Application.id).filter(User.id == user_id).first()       
+    if application is None:        
+        abort(404)
+
+    # identity checks
+    user = User.query.get(user_id)
+    if current_user.is_applicant():
+        abort(404)
+    elif current_user.is_advisor():
+        if application.legal_advisor_id != current_user.id:
+            abort(404)
+        
+ 
+    try:       
+        application.stage = Stage.IDP_REJECTED      
+        db.session.commit()        
+        flash(     
+            'Application stage {} successfully changed to rejected.'.format(        
+                application.user), 'application-stage-update-success')
+        utils.send_rejection_email(user);     
+    except IntegrityError as e:     
+        db.session.rollback()      
+        flash('Error Occurred. Please try again.', 'application-stage-update-error')      
+        
+    return redirect(url_for('application.index'))
+
+@login_required     
+@application.route('<int:user_id>/change_status_to_accepted')      
+def change_status_to_accepted(user_id):        
+    application = Application.query.join(User, User.application_id == Application.id).filter(User.id == user_id).first()       
+    if application is None:        
+        abort(404)
+
+    # identity checks
+    user = User.query.get(user_id)
+    if current_user.is_applicant():
+        abort(404)
+    elif current_user.is_advisor():
+        if application.legal_advisor_id != current_user.id:
+            abort(404)
+        
+    checklist_complete = True      
+        
+    for c in application.checklist_items:     
+        if c.documents == None:        
+            checklist_complete = False     
+        
+    if checklist_complete:     
+        try:       
+            application.stage = Stage.IDP_ACCEPTED     
+            db.session.commit()        
+            flash(     
+                'Application stage {} successfully changed to accepted.'.format(        
+                    application.user), 'application-stage-update-success')
+            utils.send_acceptance_email(user);     
         except IntegrityError as e:     
             db.session.rollback()      
             flash('Error Occurred. Please try again.', 'application-stage-update-error')       
