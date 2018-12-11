@@ -63,6 +63,13 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if current_user.is_screener or current_user.is_advisor or current_user.is_admin %}
+        <a href="{{ url_for('application.change_status_to_complete', user_id=user.id) }}" class="ui icon button">
+          <i class="check icon"></i>
+          Mark as Complete
+        </a>
+        {% endif %}
     </div>
 </div>
 

@@ -56,11 +56,7 @@
                         <td>{{ u.application.stage}}</td>
                         <td>
                             <a href="{{ url_for('application.view', user_id=u.id) }}" class="ui small compact icon button">
-                              View Profile
-                            </a>
-                            <a href="{{ url_for('application.change_status_to_complete', user_id=u.id) }}" class="ui small compact icon button">
-                              <i class="check icon"></i>
-                              Mark as Complete
+                              View Application
                             </a>
                         </td>
                     </tr>
