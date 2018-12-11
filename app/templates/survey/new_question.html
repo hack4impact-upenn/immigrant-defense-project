@@ -25,7 +25,11 @@
         {{ f.render_form_field(form.content) }}
         {{ f.render_form_field(form.description) }}
 
-        <table class="ui celled unstackable table">
+        <div style="display:none;">
+            {{ f.render_form_field(form.options) }}
+        </div>
+
+        <table class="ui celled unstackable table" id="options-table">
             <thead>
                 <tr>
                     <th class="ten wide">Response Option</th>
@@ -35,35 +39,34 @@
             <tbody>
                 {% if options %}
                     {% for option in options %}
-                    <tr>
+                    <tr class="option-row" id="option-row-{{ option.id }}" data-option-id="{{ option.id }}">
                         <td class="top aligned">
                             <div class="field">
-                                <textarea rows="3">{{ option.content }}</textarea>
+                                <textarea class="option-content" rows="3">{{ option.content }}</textarea>
                             </div>
                         </td>
                         <td class="top aligned">
                             <div class="field">
-                                <select class="ui search dropdown option-dropdown" id="next-question-select">
-                                    <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
+                                <select class="ui search dropdown option-action next-question-select" onchange="show_div(this)" id="{{ option.id}}">                                    <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
                                     <option value="-1" {% if option.next_action == -1 %}selected{% endif %}>Stop – Does not qualify for a pardon</option>
                                     <option value="-2" {% if option.next_action == -2 %}selected{% endif %}>Submit – Qualifies for legal assistance</option>
                                     <option value="JUMP" {% if option.next_action > 0 %}selected{% endif %}>Skip to another question</option>
                                 </select>
                             </div>
-                            <div class="field" id="next-question-skip">
+                            <div class="field next-question-skip" id="next-question-skip-{{ option.id }}" style="">
                                 <label>Skip to which question?</label>
-                                <select class="ui search dropdown option-dropdown">
+                                <select class="ui search dropdown option-next-question">
                                     <option value="">Please select a question</option>
                                     {% for question in questions %}
                                     <option value="{{ question.id }}" {% if question.id == option.next_action %}selected{% endif %}>{{ question.content }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="field" id="next-question-stop">
+                            <div class="field next-question-stop" id="next-question-stop-{{ option.id }}" style="">
                                 <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
-                                <textarea rows="3" placeholder="">{{ option.stop_description }}</textarea>
+                                <textarea class="option-stop-description" rows="3" placeholder="">{{ option.stop_description }}</textarea>
                             </div>
-                            <div class="ui tiny red basic button delete-option-button" data-option-id="1">Delete</div>
+                            <div class="ui tiny red basic button delete-option-button" data-option-id="{{ option.id }}">Delete</div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -73,6 +76,10 @@
             </tbody>
         </table>
 
+        <button class="ui button" id="button-copy">Add Response</button>
+
+        <div class="ui hidden divider"></div>
+
         {{ f.render_form_field(form.submit) }}
         {{ f.end_form(form) }}
 
@@ -80,35 +87,63 @@
 </div>
 
 <script type="text/javascript">
+    $(".next-question-skip").hide();
+    $(".next-question-stop").hide();
 
-    $("#next-question-skip").hide();
-    $("#next-question-stop").hide();
+    // shows / hides fields based on selected option
+    function show_div(e) {
+      var id = e.id;
+      var value = e.value;
+      console.log(id);
+      console.log(value);
+      switch(value) {
+        case "0": // continue
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).hide();
+          break;
+        case "-1": // stop
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).show();
+          break;
+        case "-2": // submit
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).hide();
+          break;
+        case "JUMP": // skip
+          $("#next-question-skip-" + id).show();
+          $("#next-question-stop-" + id).hide();
+          break;
+      }
+    }
 
     $(document).ready(function() {
-        $("#next-question-select").change(function() {
-            var test = $(this).val();
-            switch(test) {
-              case "0": // continue
-                $("#next-question-skip").hide();
-                $("#next-question-stop").hide();
-                break;
-              case "-1": // stop
-                $("#next-question-skip").hide();
-                $("#next-question-stop").show();
-                break;
-              case "-2": // submit
-                $("#next-question-skip").hide();
-                $("#next-question-stop").hide();
-                break;
-              case "JUMP": // skip
-                $("#next-question-skip").show();
-                $("#next-question-stop").hide();
-                break;
-            }
-        });
-      
+        function updateOptionsField() {
+            $('.option-row').each(function() {
+                var optionId = $(this).data('option-id');
+                console.log(optionId);
+            });
+        }
+        updateOptionsField();
+        
         $('.delete-option-button').on('click', function() {
             var optionId = $(this).data('option-id');
+            $('#option-row-' + optionId).remove();
+        });
+
+        $('#submit').on('click', function() {
+            var delimiter = '!@#$%';
+            var options_str = '';
+            $('.option-row').each(function(index) {
+                options_str += $(this).data('option-id') + delimiter;
+                options_str += $(this).find('.option-content').val() + delimiter;
+                var action = $(this).find('.option-action').find('option:selected').val();
+                if (action == 'JUMP') {
+                    action = $(this).find('.option-next-question').find('option:selected').val();
+                }
+                options_str += action + delimiter;
+                options_str += $(this).find('.option-stop-description').val() + delimiter;
+            });
+            $('#options').val(options_str);
         });
     });
 </script>

@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/profile_cards.html' as p %}
+
+{% block content %}
+<div class="ui stackable grid container" style="margin-top:24px;">
+    <div class="ui hidden divider"></div>
+
+    <div class="six wide tablet five wide computer column">
+        <div class="ui cards">
+            {{ p.advisor_profile_card(user, user.id == current_user.id) }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

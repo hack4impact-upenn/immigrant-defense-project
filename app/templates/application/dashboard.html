@@ -44,9 +44,9 @@
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Phone Number</th>
                         <th>Stage</th>
-                        <th>Completed Checklist</th>
+                        <th>Legal advisor</th>
+                        <th>Application</th>
                         <th>Accept or Reject</th>
                     </tr>
                 </thead>
@@ -55,15 +55,16 @@
                     <tr class="applicant-row" application-profile-id={{ u.id }}>
                         <td>{{ u.first_name }}</td>
                         <td>{{ u.last_name }}</td>
-                        <td>{{ u.phone_number }}</td>
-                        <td>{{ u.application.stage}}</td>
+                        <td>{{ u.application.stage }}</td>
+                        {% if u.application.legal_advisor %}
+                            <td>{{ u.application.legal_advisor.first_name ~ " " ~ u.application.legal_advisor.last_name }}</td>
+                        {% else %}
+                            <td>{{ "Not matched yet" }}</td>
+                        {% endif %}
                         <td>
-                          <div class="ui buttons">
-                            <a href="{{ url_for('application.change_status_to_complete', user_id=u.id) }}" class="ui small compact icon button">
-                              <i class="check icon"></i>
+                            <a href="{{ url_for('application.view', user_id=u.id) }}" class="ui small compact icon button">
+                              View Application
                             </a>
-                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                          </div>
                         </td>
                         <td>
                           <div class="ui buttons">

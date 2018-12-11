@@ -1,0 +1,178 @@
+{% macro advisor_profile_card(user, is_current_user) %}
+<div class="ui card">
+    <div class="content">
+        <h3>{{ user.full_name() }}</h3>
+    </div>
+    <div class="content">
+        <div class="ui sub header">Contact Information</div>
+        <div class="ui list">
+            <div class="item">
+                <i class="mail icon"></i>
+                <div class="content">
+                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </div>
+            </div>
+            {% if user.phone_number %}
+            <div class="item">
+                <i class="phone icon"></i>
+                <div class="content">
+                    <a href="tel:{{ user.phone_number }}">{{ user.phone_number }}</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if user.location %}
+            <div class="item">
+                <i class="map marker alternate icon"></i>
+                <div class="content">
+                    &nbsp;{{ user.location }}
+                </div>
+            </div>
+            {% endif %}
+            {% if user.languages %}
+            <div class="item">
+                <i class="microphone icon"></i>
+                <div class="content">
+                    &nbsp;{{ user.languages }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if user.bio %}
+    <div class="content">
+        <div class="ui sub header">Bio</div>
+        <p>{{ user.bio }}</p>
+    </div>
+    {% endif %}
+    {% if user.law_experience %}
+    <div class="content">
+        <div class="ui sub header">Prior Law Experience</div>
+        <p>{{ user.law_experience }}</p>
+    </div>
+    {% endif %}
+    {% if user.clemency_familiarity %}
+    <div class="content">
+        <div class="ui sub header">Familiarity with Clemency Laws</div>
+        <p>{{ user.clemency_familiarity }}</p>
+    </div>
+    {% endif %}
+    {% if is_current_user %}
+    <div class="content">
+      <a class="ui primary button" href="/advisor/edit">
+          Update Profile
+      </a>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro applicant_profile_card(user) %}
+<div class="ui card">
+    <div class="content">
+        <h3>{{ user.full_name() }}</h3>
+    </div>
+    <div class="content">
+        <div class="ui sub header">Application Stage</div>
+        <p>{{ user.application.stage }}</p>
+    </div>
+    <div class="content">
+        <div class="ui sub header">Contact Information</div>
+        <div class="ui list">
+            <div class="item">
+                <i class="mail icon"></i>
+                <div class="content">
+                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </div>
+            </div>
+            {% if user.phone_number %}
+            <div class="item">
+                <i class="phone icon"></i>
+                <div class="content">
+                    <a href="tel:{{ user.phone_number }}">{{ user.phone_number }}</a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="item">
+                <i class="map marker alternate icon"></i>
+                <div class="content">
+                    &nbsp;Philadelphia
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if user.bio %}
+    <div class="content">
+        <div class="ui sub header">Bio</div>
+        <p>{{ user.bio }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro screener_profile_card(user, is_current_user) %}
+<div class="ui card">
+    <div class="content">
+        <h3>{{ user.full_name() }}</h3>
+    </div>
+    <div class="content">
+        <div class="ui sub header">Contact Information</div>
+        <div class="ui list">
+            <div class="item">
+                <i class="mail icon"></i>
+                <div class="content">
+                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </div>
+            </div>
+            {% if user.phone_number %}
+            <div class="item">
+                <i class="phone icon"></i>
+                <div class="content">
+                    <a href="tel:{{ user.phone_number }}">{{ user.phone_number }}</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if user.location %}
+            <div class="item">
+                <i class="map marker alternate icon"></i>
+                <div class="content">
+                    &nbsp;{{ user.location }}
+                </div>
+            </div>
+            {% endif %}
+            {% if user.languages %}
+            <div class="item">
+                <i class="microphone icon"></i>
+                <div class="content">
+                    &nbsp;{{ user.languages }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if user.bio %}
+    <div class="content">
+        <div class="ui sub header">Bio</div>
+        <p>{{ user.bio }}</p>
+    </div>
+    {% endif %}
+    {% if user.immigrant_experience %}
+    <div class="content">
+        <div class="ui sub header">Prior Experience with Immigrants</div>
+        <p>{{ user.immigrant_experience }}</p>
+    </div>
+    {% endif %}
+    {% if user.crime_experience %}
+    <div class="content">
+        <div class="ui sub header">Prior Experience with Crime</div>
+        <p>{{ user.crime_experience }}</p>
+    </div>
+    {% endif %}
+    {% if is_current_user %}
+    <div class="content">
+      <a class="ui primary button" href="/screener/edit">
+          Update Profile
+      </a>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}

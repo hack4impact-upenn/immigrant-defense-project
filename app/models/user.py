@@ -224,6 +224,13 @@ class User(UserMixin, db.Model):
                     password='password',
                     confirmed=True,
                     role=role,
+                    location=fake.city(),
+                    clemency_familiarity=fake.text(),
+                    law_experience=fake.text(),
+                    immigrant_experience=fake.text(),
+                    crime_experience=fake.text(),
+                    bio=fake.text(),
+                    languages=fake.sentence(),
                     **kwargs)
                 if user.role.permissions == Permission.GENERAL:
                     # Create application

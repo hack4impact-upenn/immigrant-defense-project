@@ -4,6 +4,7 @@ from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
 
 from app import db
+from app.decorators import admin_required
 from app.models import SurveyQuestion, SurveyOption, SurveyOptionAction, SurveyResponse
 from app.survey.forms import generate_response_form, NewSurveyQuestion
 
@@ -71,6 +72,7 @@ def restart_survey():
 
 
 @survey.route('/manage')
+@admin_required
 def manage_questions():
     """View and manage survey questions."""
     questions = SurveyQuestion.query.all()
@@ -78,6 +80,7 @@ def manage_questions():
 
 
 @survey.route('/manage/new', methods=['GET', 'POST'])
+@admin_required
 def new_question():
     form = NewSurveyQuestion()
     type = "Add New"
@@ -96,6 +99,7 @@ def new_question():
 
 
 @survey.route('/manage/<int:question_id>', methods=['GET', 'POST'])
+@admin_required
 def edit_question(question_id):
     """Edit a survey question's title and description."""
     survey_question = SurveyQuestion.query.get(question_id)
@@ -103,19 +107,52 @@ def edit_question(question_id):
         return redirect(404)
 
     form = NewSurveyQuestion()
-    form_type = "Edit"
+    form_type = 'Edit'
     questions = SurveyQuestion.query.all()
+
+    def parse_options(options_str):
+        delimiter = '!@#$%'
+        # string should be in the form of:
+        # id [delimiter] content [delimiter] next_action [delimiter] stop_description[
+        option_list = options_str.split(delimiter)
+        print(option_list)
+        print(len(option_list))
+        if len(option_list) < 4:
+            return
+        existing_option_ids = set([o.id for o in survey_question.options])
+        print(question_id)
+        for i in range(0, len(option_list) - 1, 4):
+            # Parse the options
+            option_id = option_list[i]
+            option_content = option_list[i + 1]
+            option_next_action = option_list[i + 2]
+            option_stop_description = option_list[i + 3]
+            if option_id in existing_option_ids:
+                option = SurveyOption.query.get(option_id)
+                option.content = option_content
+                option.next_action = option_next_action
+                option.stop_description = option_stop_description
+            else:
+                option = SurveyOption(
+                    question_id=question_id,
+                    content=option_content,
+                    next_action=option_next_action,
+                    stop_description=option_stop_description)
+            db.session.add(option)
+        for option_id in existing_option_ids:
+            db.session.delete(SurveyOption.query.get(option_id))
 
     if form.validate_on_submit():
         survey_question.content = form.content.data
         survey_question.description = form.description.data
         try:
+            parse_options(form.options.data)
             db.session.commit()
             flash('Survey question successfully edited.', 'form-success')
         except IntegrityError:
             db.session.rollback()
             flash('An error has occurred. Please try again.', 'form-error')
-        return render_template('survey/new_question.html', form=form, type=form_type)
+        return redirect(url_for('survey.manage_questions'))
 
     form.content.data = survey_question.content
     form.description.data = survey_question.description
@@ -123,6 +160,7 @@ def edit_question(question_id):
 
 
 @survey.route('/manage/<int:id>/delete')
+@admin_required
 def delete_question(id):
     """Deletes the survey question"""
     survey_question = SurveyQuestion.query.get(id)
