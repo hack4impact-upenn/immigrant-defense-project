@@ -23,9 +23,11 @@
 
                 <div class="ui buttons">
                     {{ f.render_form_field(form.submit) }}
-                    <a class="ui button" href="{{ url_for('survey.restart_survey') }}">Restart</a>
+
+                    <a class="ui basic button" href="{{ url_for('survey.restart_survey') }}">Restart</a>
                 </div>
                 {{ f.end_form(form) }}
+
             </div>
         </div>
     </div>
