@@ -32,9 +32,6 @@ class RegistrationForm(Form):
                              Length(1, 64),
                              Email()])
 
-    phone_number = PhoneNumberField(
-        'Phone Number', validators=[InputRequired(),
-                                    Length(1, 32)])
     password = PasswordField(
         'Password',
         validators=[
