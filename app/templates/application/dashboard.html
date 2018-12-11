@@ -2,9 +2,10 @@
 {% import 'macros/form_macros.html' as f %}
 
 {% block content %}
-    <div class="ui stackable grid container">
-      <div class="ui hidden divider"></div>
-        <div class="sixteen wide tablet twelve wide computer centered column">
+<div class="ui stackable grid container">
+    <div class="ui hidden divider"></div>
+    <div class="row">
+        <div class="sixteen wide centered column">
             <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
                 <i class="caret left icon"></i>
                 Back to dashboard
@@ -15,12 +16,16 @@
                     View and manage applications.
                 </div>
             </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="four wide column">
             <h3 class="ui header">
                 Assign Advisor to Selected Applicants
             </h3>
             {% set flashes = {
-               'error':   get_flashed_messages(category_filter=['form-error']),
-               'success': get_flashed_messages(category_filter=['form-success'])
+            'error': get_flashed_messages(category_filter=['form-error']),
+            'success': get_flashed_messages(category_filter=['form-success'])
             } %}
 
             {{ f.begin_form(advisor_form, flashes) }}
@@ -33,8 +38,8 @@
                 Assign Partner to Selected Applicants
             </h3>
             {% set flashes = {
-               'error':   get_flashed_messages(category_filter=['form-error']),
-               'success': get_flashed_messages(category_filter=['form-success'])
+            'error': get_flashed_messages(category_filter=['form-error']),
+            'success': get_flashed_messages(category_filter=['form-success'])
             } %}
 
             {{ f.begin_form(partner_form, flashes) }}
@@ -42,7 +47,8 @@
             {{ f.render_form_field(partner_form.submit) }}
             {{ partner_form.applicant_ids_partner }}
             {{ f.end_form(partner_form) }}
-
+        </div>
+        <div class="twelve wide column">
             <div class="ui middle aligned divided list">
                 <div class="item">
                     <div class="content">
@@ -67,78 +73,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for u in applicants %}
+                    {% for u in applicants %}
                     <tr class="applicant-row" application-profile-id={{ u.id }}>
                         <td>{{ u.first_name }}</td>
                         <td>{{ u.last_name }}</td>
                         <td>{{ u.application.stage }}</td>
                         {% if u.application.legal_advisor %}
-                            <td>{{ u.application.legal_advisor.first_name ~ " " ~ u.application.legal_advisor.last_name }}</td>
+                        <td>{{ u.application.legal_advisor.first_name ~ " " ~ u.application.legal_advisor.last_name }}</td>
                         {% else %}
-                            <td>{{ "No legal advisor matched yet" }}</td>
+                        <td>{{ "No legal advisor matched yet" }}</td>
                         {% endif %}
                         {% if u.application.screener %}
-                            <td>{{ u.application.screener.first_name ~ " " ~ u.application.screener.last_name }}</td>
+                        <td>{{ u.application.screener.first_name ~ " " ~ u.application.screener.last_name }}</td>
                         {% else %}
-                            <td>{{ "No partner matched yet" }}</td>
+                        <td>{{ "No partner matched yet" }}</td>
                         {% endif %}
                         <td>
                             <a href="{{ url_for('application.view', user_id=u.id) }}" class="ui small compact icon button">
-                              View Application
+                                View Application
                             </a>
                         </td>
                         <td>
-                          <div class="ui buttons">
-                            <a href="{{ url_for('application.change_status_to_accepted', user_id=u.id) }}" class="ui small compact icon button">
-                              <i class="check icon"></i>
-                            </a>
-                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                          </div>
-                          <div class="ui buttons">
-                            <a href="{{ url_for('application.change_status_to_rejected', user_id=u.id) }}" class="ui small compact icon button">
-                              <i class="times icon"></i>
-                            </a>
-                            <!--we give the button and icon the same id to avoid weird things with hitboxes-->
-                          </div>
+                            <div class="ui buttons">
+                                <a href="{{ url_for('application.change_status_to_accepted', user_id=u.id) }}" class="ui small compact icon button">
+                                    <i class="check icon"></i>
+                                </a>
+                                <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                            </div>
+                            <div class="ui buttons">
+                                <a href="{{ url_for('application.change_status_to_rejected', user_id=u.id) }}" class="ui small compact icon button">
+                                    <i class="times icon"></i>
+                                </a>
+                                <!--we give the button and icon the same id to avoid weird things with hitboxes-->
+                            </div>
                         </td>
                     </tr>
-                {% endfor %}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+</div>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            // searching within the checklist items
-            $('#search-applications').keyup(function () {
-                var searchText = $(this).val();
-                if (searchText.length > 0) {
-                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
-                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
-                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
-                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
-                } else {
-                    $('td.positive').removeClass('positive');
-                    $('tr.hidden').removeClass('hidden').show();
-                }
-            });
-
-            var selectedProfileIds = new Set();
-
-            // Allows admin to select applications
-            $('.applicant-row').click(function (e) {
-                applicantProfileId = this.getAttribute('application-profile-id');
-                if (selectedProfileIds.has(applicantProfileId)) {
-                    selectedProfileIds.delete(applicantProfileId);
-                    $(this).removeClass('active');
-                } else {
-                    selectedProfileIds.add(applicantProfileId);
-                    $(this).addClass('active');
-                }
-                $('#applicant_ids_advisor').val(Array.from(selectedProfileIds));
-                $('#applicant_ids_partner').val(Array.from(selectedProfileIds));
-            });
+<script type="text/javascript">
+    $(document).ready(function() {
+        // searching within the checklist items
+        $('#search-applications').keyup(function() {
+            var searchText = $(this).val();
+            if (searchText.length > 0) {
+                $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+            } else {
+                $('td.positive').removeClass('positive');
+                $('tr.hidden').removeClass('hidden').show();
+            }
         });
-    </script>
+
+        var selectedProfileIds = new Set();
+
+        // Allows admin to select applications
+        $('.applicant-row').click(function(e) {
+            applicantProfileId = this.getAttribute('application-profile-id');
+            if (selectedProfileIds.has(applicantProfileId)) {
+                selectedProfileIds.delete(applicantProfileId);
+                $(this).removeClass('active');
+            } else {
+                selectedProfileIds.add(applicantProfileId);
+                $(this).addClass('active');
+            }
+            $('#applicant_ids_advisor').val(Array.from(selectedProfileIds));
+            $('#applicant_ids_partner').val(Array.from(selectedProfileIds));
+        });
+    });
+</script>
 {% endblock %}
