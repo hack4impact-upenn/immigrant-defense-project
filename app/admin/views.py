@@ -16,10 +16,15 @@ admin = Blueprint('admin', __name__)
 
 @admin.route('/')
 @login_required
-@admin_required
 def index():
     """Admin dashboard page."""
-    return render_template('admin/index.html')
+    if not current_user.is_authenticated or current_user.is_applicant():
+        return redirect(403)
+    elif current_user.is_screener():  # user is screener
+        return redirect(url_for('screener.index'))
+    elif current_user.is_advisor():  # user is advisor
+        return redirect(url_for('advisor.index'))
+    return render_template('admin/index.html')  # user is admin
 
 
 @admin.route('/invite-user', methods=['GET', 'POST'])
