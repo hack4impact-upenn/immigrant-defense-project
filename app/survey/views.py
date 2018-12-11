@@ -4,6 +4,7 @@ from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
 
 from app import db
+from app.decorators import admin_required
 from app.models import SurveyQuestion, SurveyOption, SurveyOptionAction, SurveyResponse
 from app.survey.forms import generate_response_form, NewSurveyQuestion
 
@@ -71,6 +72,7 @@ def restart_survey():
 
 
 @survey.route('/manage')
+@admin_required
 def manage_questions():
     """View and manage survey questions."""
     questions = SurveyQuestion.query.all()
@@ -78,6 +80,7 @@ def manage_questions():
 
 
 @survey.route('/manage/new', methods=['GET', 'POST'])
+@admin_required
 def new_question():
     form = NewSurveyQuestion()
     type = "Add New"
@@ -96,6 +99,7 @@ def new_question():
 
 
 @survey.route('/manage/<int:question_id>', methods=['GET', 'POST'])
+@admin_required
 def edit_question(question_id):
     """Edit a survey question's title and description."""
     survey_question = SurveyQuestion.query.get(question_id)
@@ -156,6 +160,7 @@ def edit_question(question_id):
 
 
 @survey.route('/manage/<int:id>/delete')
+@admin_required
 def delete_question(id):
     """Deletes the survey question"""
     survey_question = SurveyQuestion.query.get(id)
