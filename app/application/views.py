@@ -48,7 +48,7 @@ def index():
         for app_id in partner_form.applicant_ids_partner.data.split(','):
             user = User.query.filter_by(id=app_id).first()
             data = Application.query.filter_by(id=user.application_id).first()
-            data.partner = partner_form.partner.data
+            data.screener = partner_form.partner.data
             data.stage = Stage.MATCHED_PARTNER if partner_form.partner.data is not None else Stage.UNMATCHED_PARTNER    
             db.session.add(data)
         db.session.commit()

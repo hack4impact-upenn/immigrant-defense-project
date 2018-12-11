@@ -77,8 +77,8 @@
                         {% else %}
                             <td>{{ "No legal advisor matched yet" }}</td>
                         {% endif %}
-                        {% if u.application.partner %}
-                            <td>{{ u.application.partner.first_name ~ " " ~ u.application.partner.last_name }}</td>
+                        {% if u.application.screener %}
+                            <td>{{ u.application.screener.first_name ~ " " ~ u.application.screener.last_name }}</td>
                         {% else %}
                             <td>{{ "No partner matched yet" }}</td>
                         {% endif %}
