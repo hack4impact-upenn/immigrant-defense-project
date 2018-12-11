@@ -47,14 +47,13 @@
                         </td>
                         <td class="top aligned">
                             <div class="field">
-                                <select class="ui search dropdown option-action" id="next-question-select">
-                                    <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
+                                <select class="ui search dropdown option-action next-question-select" onchange="show_div(this)" id="{{ option.id}}">                                    <option value="0" {% if option.next_action == 0 %}selected{% endif %}>Continue to next question</option>
                                     <option value="-1" {% if option.next_action == -1 %}selected{% endif %}>Stop – Does not qualify for a pardon</option>
                                     <option value="-2" {% if option.next_action == -2 %}selected{% endif %}>Submit – Qualifies for legal assistance</option>
                                     <option value="JUMP" {% if option.next_action > 0 %}selected{% endif %}>Skip to another question</option>
                                 </select>
                             </div>
-                            <div class="field" id="next-question-skip">
+                            <div class="field next-question-skip" id="next-question-skip-{{ option.id }}" style="">
                                 <label>Skip to which question?</label>
                                 <select class="ui search dropdown option-next-question">
                                     <option value="">Please select a question</option>
@@ -63,7 +62,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="field" id="next-question-stop">
+                            <div class="field next-question-stop" id="next-question-stop-{{ option.id }}" style="">
                                 <label>Please fill out the following field to provide the respondent more detailed information about why they do not qualify for a pardon.</label>
                                 <textarea class="option-stop-description" rows="3" placeholder="">{{ option.stop_description }}</textarea>
                             </div>
@@ -77,6 +76,10 @@
             </tbody>
         </table>
 
+        <button class="ui button" id="button-copy">Add Response</button>
+
+        <div class="ui hidden divider"></div>
+
         {{ f.render_form_field(form.submit) }}
         {{ f.end_form(form) }}
 
@@ -84,9 +87,36 @@
 </div>
 
 <script type="text/javascript">
+    $(".next-question-skip").hide();
+    $(".next-question-stop").hide();
+
+    // shows / hides fields based on selected option
+    function show_div(e) {
+      var id = e.id;
+      var value = e.value;
+      console.log(id);
+      console.log(value);
+      switch(value) {
+        case "0": // continue
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).hide();
+          break;
+        case "-1": // stop
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).show();
+          break;
+        case "-2": // submit
+          $("#next-question-skip-" + id).hide();
+          $("#next-question-stop-" + id).hide();
+          break;
+        case "JUMP": // skip
+          $("#next-question-skip-" + id).show();
+          $("#next-question-stop-" + id).hide();
+          break;
+      }
+    }
 
     $(document).ready(function() {
-
         function updateOptionsField() {
             $('.option-row').each(function() {
                 var optionId = $(this).data('option-id');
@@ -94,32 +124,7 @@
             });
         }
         updateOptionsField();
-
-        $("#next-question-skip").hide();
-        $("#next-question-stop").hide();
-
-        $("#next-question-select").change(function() {
-            var test = $(this).val();
-            switch(test) {
-              case "0": // continue
-                $("#next-question-skip").hide();
-                $("#next-question-stop").hide();
-                break;
-              case "-1": // stop
-                $("#next-question-skip").hide();
-                $("#next-question-stop").show();
-                break;
-              case "-2": // submit
-                $("#next-question-skip").hide();
-                $("#next-question-stop").hide();
-                break;
-              case "JUMP": // skip
-                $("#next-question-skip").show();
-                $("#next-question-stop").hide();
-                break;
-            }
-        });
-
+        
         $('.delete-option-button').on('click', function() {
             var optionId = $(this).data('option-id');
             $('#option-row-' + optionId).remove();
