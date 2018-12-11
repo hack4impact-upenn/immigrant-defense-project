@@ -41,9 +41,9 @@ PySocks==1.6.8
 python-dateutil==2.6.0
 python-editor==1.0.3
 pytz==2018.5
-raygun4py==3.1.6
+raygun4py==3.1.4
 redis==2.10.5
-requests==2.20.0
+requests==2.9.1
 rq==0.7.1
 s3transfer==0.1.13
 six==1.10.0
