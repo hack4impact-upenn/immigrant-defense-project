@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import Application, User, Stage
-from app.application.forms import AssignAdvisorForm
+from app.application.forms import AssignAdvisorForm, AssignPartnerForm
 
 from app.decorators import admin_required
 
@@ -41,10 +41,23 @@ def index():
         flash('Successfully assigned advisors!', 'form-success')
         return redirect(url_for('application.index'))
 
+    partner_form = AssignPartnerForm()
+    if partner_form.validate_on_submit():
+        for app_id in partner_form.applicant_ids.data.split(','):
+            user = User.query.filter_by(id=app_id).first()
+            data = Application.query.filter_by(id=user.application_id).first()
+            data.partner = partner_form.partner.data
+            data.stage = Stage.MATCHED_PARTNER if partner_form.partner.data is not None else Stage.UNMATCHED_PARTNER    
+            db.session.add(data)
+        db.session.commit()
+        flash('Successfully assigned partners!', 'form-success')
+        return redirect(url_for('application.index'))
+
     return render_template(
         'application/dashboard.html',
         applicants=applicants,
-        advisor_form=advisor_form)
+        advisor_form=advisor_form,
+        partner_form=partner_form)
 
 # 
 # @checklist.route('/user/<int:user_id>', methods=['GET'])

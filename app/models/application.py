@@ -21,6 +21,9 @@ class Application(db.Model):
     legal_advisor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     legal_advisor = db.relationship('User', foreign_keys=[legal_advisor_id], backref='client_applications')
 
+    partner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    parner = db.relationship('User', foreign_keys=[partner_id], backref='partner_applications')
+
     checklist_items = db.relationship('UserChecklistItem', backref='application', lazy=True)
     survey_responses = db.relationship('SurveyResponse', backref='application', lazy=True)
 
