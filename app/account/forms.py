@@ -4,6 +4,7 @@ from wtforms import ValidationError
 from wtforms.fields import (BooleanField, PasswordField, StringField,
                             SubmitField)
 from wtforms.fields.html5 import EmailField
+from wtforms_alchemy import PhoneNumberField
 from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 from app.models import User
@@ -30,6 +31,10 @@ class RegistrationForm(Form):
         'Email', validators=[InputRequired(),
                              Length(1, 64),
                              Email()])
+
+    phone_number = PhoneNumberField(
+        'Phone Number', validators=[InputRequired(),
+                                    Length(1, 32)])
     password = PasswordField(
         'Password',
         validators=[
@@ -100,6 +105,19 @@ class ChangePasswordForm(Form):
     new_password2 = PasswordField(
         'Confirm new password', validators=[InputRequired()])
     submit = SubmitField('Update password')
+
+
+class ChangePhoneNumberForm(Form):
+    old_phone_number = PhoneNumberField('Old phone number', validators=[InputRequired()])
+    new_phone_number = PhoneNumberField(
+        'New phone number',
+        validators=[
+            InputRequired(),
+            EqualTo('new_phone_number2', 'Phone numbers must match.')
+        ])
+    new_phone_number2 = PhoneNumberField(
+        'Confirm new phone number', validators=[InputRequired()])
+    submit = SubmitField('Update phone number')
 
 
 class ChangeEmailForm(Form):
