@@ -51,7 +51,7 @@ SQLAlchemy==1.1.5
 SQLAlchemy-Utils==0.33.9
 twilio==6.19.1
 tzlocal==1.5.1
-urllib3==1.24
+urllib3==1.26.5
 validators==0.12.3
 webassets==0.12.1
 Werkzeug==0.14.1
